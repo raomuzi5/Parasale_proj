@@ -1,0 +1,38 @@
+﻿
+<h2> Parasale - Speech to Text (Powered by Microsoft Congnitive Serives)</h2>
+
+<img id="speechActivity" class="hidden" src="~/assets/img/testFF/waiting.gif" />
+<img id="networkActivity" class="hidden" src="~/assets/img/testFF/radio.gif" />
+
+<link href="~/assets/css/custom.css" rel="stylesheet" />
+<table width="100%">
+    <tr class="d-none">
+        <td align="left"><A href="https://azure.microsoft.com/en-us/try/cognitive-services/?api=speech-services" target="_blank">Speech Services API Key</A>:</td>
+        <td><input id="key" type="text" size="40" value="e148aead713845b9b3013b8bc4f80235"></td>
+    </tr>
+    <tr class="d-none">
+        <td align="left">Language:</td>
+        <td align="left">
+            <select id="languageoptions">
+                <option value="en-US" selected="selected">English - US</option>
+                <option value="zh-HK">Chinese - Cantonese</option>
+                <option value="zh-CN">Chinese - Mandarin</option>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td />
+        <td><button id="createBtn" onclick="createAndSetupClient()">Create</button><button id="startBtn" disabled="disabled" onclick="start()">Start</button><button id="stopBtn" disabled="disabled" onclick="stop()">Stop</button></td>
+    </tr>
+    <tr>
+        <td />
+        <td>
+            <textarea id="output" readonly></textarea>
+        </td>
+    </tr>
+</table>
+<ul id="wavFiles">
+</ul>
+
+<script src="~/assets/BingSpeech.js" type="text/javascript"></script>
+<script src="~/assets/index.js"></script>

@@ -1,0 +1,167 @@
+﻿@model UserIndexViewModel
+@{
+    ViewData["Title"] = "Practice Objections";
+    var voiceboarding = Model.VoiceBoarding;
+}
+
+<link href="~/lib/font-awesome-4.7.0/font-awesome-4.7.0/css/font-awesome.css" rel="stylesheet" />
+
+<link href="~/lib/HoldOn.js-master/src/css/HoldOn.css" rel="stylesheet" />
+<style>
+    .ctm-Spinner {
+        position: relative;
+        width: 125px;
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+
+    .bootbox.modal .modal-footer {
+        justify-content: flex-end;
+    }
+
+    .highcharts-credits {
+        display: none !important;
+    }
+</style>
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="header pb-0 d-flex justify-content-between align-items-center">
+                <h2>
+                    <strong>
+                        Parasale
+                    </strong>
+                    <small>Please Speak "Give me any objection"</small>
+                    <small>or "Give me X Objections"</small>
+                    <small>or "Give me Objections for X minutes"</small>
+                </h2>
+                
+            </div>
+            <div class="body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group listCollections">
+                            <label asp-for="collectionId" class="control-label"></label>
+                            @Html.DropDownListFor(x => x.collectionId, Model.collections, "Select Collection", new { @class = "form-control collectionHeight" + "" })
+                            <span asp-validation-for="collectionId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="collectionId" class="control-label">Select Language</label>
+                            <div class="d-flex align-items-center flex-nowrap SelectLang">
+                                <div class="languageDrop">
+                                    <select id="voiceSelect" class="form-control "></select>
+                                </div>
+                                <div class="voiceBtns">
+                                    <div class="d-flex align-items-center flex-nowrap">
+                                        <button class="btn btn-primary microphone mr-2 btn-sm" id="microphones" style="border-radius: 4px;">
+                                            <i class=" m-0 fa fa-microphone-slash mcicon"></i>
+                                        </button>
+                                        <button class="btn btn-success play btn-sm mr-2" style="border-radius: 4px;">
+                                            <i class="m-0 fa fa-play btnply"></i>
+                                        </button>
+                                        <button class="btn btn-info btn-sm " id="viewObjections" style="border-radius: 4px;" data-toggle="tooltip" data-placement="top" title="Objections & Responses">
+                                            <i class=" m-0 fa fa-eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group d-none" id="askedobj">
+                            <span id="asked" class="text-blue"></span>
+                            <span id="completed" class="text-green"></span>
+                            <span id="remainig" class="text-red"></span>
+
+                        </div>
+
+                        <div class="form-group d-none" id="showcounter">
+                            <p id="demo"></p>
+                        </div>
+                        <div class="checkbox d-none">
+                            <input id="randomVoices" class="" type="checkbox">
+                            <label for="randomVoices">Random Dialect</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label>&nbsp;</label>
+                        <div class="text-box" contenteditable="false"></div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+     var ColId;
+    @if (Model.LastUserHistory !=null)
+    {
+        <text>           
+         ColId =@Model.LastUserHistory.CollectionId;
+        var CollectionId = "option[value=@Model.LastUserHistory.CollectionId]";
+       var langdial = "option[data-id=@Model.LastUserHistory.DialectDataId]";
+         </text>
+    }
+    
+</script>
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="~/lib/moment.js"></script>
+<script src="~/assets/main.js"></script>
+<script>
+    var IsMainJsExist = "true";
+          $(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+    $("#txtwelcome").html("Practice Objections");
+    });
+</script>
+<script src="~/lib/jQuery-slimScroll-1.3.8/jquery.slimscroll.js"></script>
+@if (voiceboarding != true)
+{
+    <script src="~/assets/onboarding/js/voice-onboardingForManager.js"></script>
+}
+<script>
+     $(window).on('load', function () {
+        @if (Model.LastUserHistory !=null)
+        {
+          var Dial =Model.LastUserHistory.DialectDataName;
+          <text>
+         
+         $("#collectionId").find(CollectionId).attr("selected", true);
+        $("#voiceSelect").find(langdial).attr("selected", true);
+        $('#voiceSelect').selectpicker('refresh');
+        $('#collectionId').selectpicker('refresh');
+          </text>
+        }
+    })
+</script>
+@*<script>
+        $(document).ready(function () {
+            var btnHtml = '';
+         btnHtml += '<button id="ppVoice" class="ppVoice btn btn-danger">Pause</button>';
+        btnHtml += '<button id="skip" class="skip btn btn-light">Save For Later</button>';
+            $('.ttour-footer').prepend(btnHtml);
+            $(".ppVoice").on("click", function () {
+
+                if ($(this).text() === "Play") {
+                    $(this).text("Pause");
+                    synth.resume();
+                }
+                else {
+                    $(this).text("Play");
+                    synth.pause();
+                }
+            });
+            $(".skip").on("click", function () {
+        var Urlpath = window.location.href;
+        $.ajax({
+
+            url: '/Speech/SaveLater/',
+            data: { Urlpath:Urlpath, currentStep: currentStep },
+            success: function (res) {
+                $.notify("Successfully saved for later", 'success');
+            }
+        });
+    });
+
+        });
+    </script>*@

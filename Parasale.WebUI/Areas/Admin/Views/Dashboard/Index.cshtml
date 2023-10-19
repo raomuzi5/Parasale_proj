@@ -1,0 +1,988 @@
+﻿@model DashboardIndexViewModel
+
+@{
+    ViewData["Title"] = "Home Page";
+    var voiceboarding = Model.voiceBoarding;
+    var currentSteps = Model.currentStep;
+
+    var UserID = Model.userId;
+    var UserName = Model.userName;
+    var path = Model.path;
+}
+<style>
+    .Hidden {
+        display: none !important;
+    }
+</style>
+
+<div class="row clearfix">
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <div class="card">
+            <div class="header pb-0">
+                <h2><strong>Reports</strong></h2>
+            </div>
+            <div class="body">
+                <div class="mainDiv"></div>
+                <button id="autoplay" class="d-none">play</button>
+                <div class="row align-items-center dateAndSwitchRow">
+                    <div class="col-md-6 ">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-0">
+                                    <label class="col-form-label p-0">Start Date</label>
+
+                                    <input class="form-control dates" id="startDate" placeholder="Start Date" />
+
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-0">
+                                    <label class="col-form-label p-0">End Date</label>
+
+                                    <input class="form-control dates" id="endDate" placeholder="End Date" />
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-md-6 text-right togglebtns">
+
+                        <div class="PS_checkbox switcher">
+                            <label for="byUser">
+                                <input type="radio" name="byreport" checked id="byUser" value="">
+                                <span><small></small></span>
+                                <small>By User</small>
+                            </label>
+                        </div>
+                        <div class="PS_checkbox switcher">
+                            <label for="byManager">
+                                <input type="radio" name="byreport" id="byManager" value="">
+                                <span><small></small></span>
+                                <small>By Manager</small>
+                            </label>
+                        </div>
+                        <div class="PS_checkbox switcher">
+                            <label for="byCollection">
+                                <input type="radio" name="byreport" id="byCollection" value="">
+                                <span><small></small></span>
+                                <small>By Collection</small>
+                            </label>
+                        </div>
+                        @*<div class="checkbox inlineblock mr-3">
+                                <input id="byUser" type="checkbox">
+                                <label for="byUser">
+                                    By User
+                                </label>
+                            </div>
+                            <div class="checkbox inlineblock mr-3">
+                                <input id="byManager" type="checkbox">
+                                <label for="byManager">
+                                    By Manager
+                                </label>
+                            </div>
+                            <div class="checkbox inlineblock mr-3">
+                                <input id="byCollection" type="checkbox">
+                                <label for="byCollection">
+                                    By Collection
+                                </label>
+                            </div>*@
+
+                    </div>
+                </div>
+                <div class="row clearfix">
+                    <div class="col-lg-12">
+                        <div class="card mb-0 py-3">
+                            <ul class="row profile_state list-unstyled">
+                                <li class="col-lg-3 col-md-3 col-6">
+                                    <div class="body">
+                                        <i class="zmdi zmdi-male col-amber"></i>
+                                        <h4>@Model.TotalActiveUsers</h4>
+                                        <span>Active Users</span>
+                                    </div>
+                                </li>
+                                <li class="col-lg-3 col-md-3 col-6">
+                                    <div class="body">
+                                        <i class="zmdi zmdi-thumb-up col-blue"></i>
+                                        <h4>@string.Format("{0:0.00}", Model.CompletedObjections)%</h4>
+                                        <span>Completed Objections</span>
+                                    </div>
+                                </li>
+                                <li class="col-lg-3 col-md-3 col-6">
+                                    <div class="body">
+                                        <i class="zmdi zmdi-crop-free col-red"></i>
+                                        <h4>@string.Format("{0:0.00}", Model.MissedObjections)%</h4>
+                                        <span>Missed Objections</span>
+                                    </div>
+                                </li>
+                                <li class="col-lg-3 col-md-3 col-6">
+                                    <div class="body">
+                                        <i class="zmdi zmdi-account text-success"></i>
+                                        <h4>@Model.Users</h4>
+                                        <span>Total Users</span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+                        <div class="ReportsNodata nodatadiv text-center nodatadivStyle">
+                            <div class="">
+                                <p>
+                                    Encourage users to practice and reports will appear
+                                    <i class="zmdi zmdi-help" data-toggle="popover" data-trigger="hover" data-placement="top" title="Help ?" data-content="  Reports will appear when a user has practiced an objection, which falls under a collection,
+                                    Scroll down to collections to set up your first one
+                                    Reports show which objections users got correct and which ones they need to work on."></i>
+                                </p>
+                                @*<img src="~/ThemeStyles/images/NoDataImages/Reports.svg" />*@
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <div class="card">
+            <div class="header pb-0 d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="one"><strong>Confidence and Consistency</strong> Score Report <i class="zmdi zmdi-info" data-toggle="popover" data-trigger="hover" data-placement="top" title="Help ?" data-content="This score indicates how prepared a user is to handle these objections in a live meeting. A lower score suggests the user needs more practice, while a higher score suggests the user is ready to perform with confidence and consistency. The score calculation considers pace of speech, coverage of key phrases, and other factors."></i></h2>
+                </div>
+                <div>
+
+                </div>
+            </div>
+            <div class="body">
+                <div class="row align-items-center dateAndSwitchRow">
+                    <div class="col-md-6">
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group ">
+                                    <label class="col-form-label p-0 ">Start Date</label>
+
+                                    <input class="form-control dates startDate" id="CCSstartDate" placeholder="Start Date" />
+
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-form-label p-0">End Date</label>
+
+                                    <input class="form-control dates endDate" id="CCSendDate" placeholder="End Date" />
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-md-6 text-right">
+                        @*<button class="btn btn-sm btn-info" id="byCollection" data-toggle="tooltip" data-placement="top" title="Filter Report"><i class="fa fa-filter"></i></button>*@
+                        <div class="PS_checkbox switcher">
+                            <label for="CCSbyObjection">
+                                <input type="radio" name="byCCSreport" checked id="CCSbyObjection" value="">
+                                <span><small></small></span>
+                                <small>By Objection</small>
+                            </label>
+                        </div>
+                        <div class="PS_checkbox switcher">
+                            <label for="CCSbyCollection">
+                                <input type="radio" name="byCCSreport" id="CCSbyCollection" value="">
+                                <span><small></small></span>
+                                <small>By Collection</small>
+                            </label>
+                        </div>
+                        <div class="PS_checkbox switcher">
+                            <label for="CCSbyUser">
+                                <input type="radio" name="byCCSreport" id="CCSbyUser" value="">
+                                <span><small></small></span>
+                                <small>By User</small>
+                            </label>
+                        </div>
+                        <div class="PS_checkbox switcher">
+                            <label for="CCSbyManager">
+                                <input type="radio" name="byCCSreport" id="CCSbyManager" value="">
+                                <span><small></small></span>
+                                <small>By Manager</small>
+                            </label>
+                        </div>
+
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div id="CCScontainer" style="min-width: 310px;
+        height: 400px;
+        margin: 0 auto
+"></div>
+
+                    </div>
+                    <div class="col-md-6">
+                        <div id="CCSbarcontainer" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+
+                    </div>
+                    <div class="CAC col-md-12 nodatadiv nodatadivStyle">
+
+                        <div class="">
+                            <p>
+                                Praise user practice and you will get to see their confidence and consistency grow.
+                                <i class="zmdi zmdi-help" data-toggle="popover" data-trigger="hover" data-placement="top" title="Help ?" data-content="A user has practiced an objection, which falls under a collection. Scroll down to collections to set up your first one. For the definition of confidence and consistency score click the black i icon above."></i>
+                            </p>
+                            @*<img src="~/ThemeStyles/images/NoDataImages/Reports.svg" />*@
+                        </div>
+                        @*<p>No Data Found</p>*@
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="row clearfix  collectionThings">
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <div class="card">
+            <div class="header d-flex justify-content-between align-items-center pb-0">
+                <h2><strong>Collections</strong> List</h2>
+                <a id="createbtn" asp-area="Admin" asp-controller="Collection" data-toggle="modal" asp-action="Create" class="btn btn-primary btn-sm addnewCollections">Add New</a>
+                @*<a id="createbtn" asp-area="Manager" asp-controller="Dashboard" data-toggle="modal" asp-action="AddObjection" class="btn btn-primary float-right">Add New</a>*@
+            </div>
+            <div class="body table-responsive">
+                @if (Model.collections != null && Model.collections.Count() > 0)
+                {
+                    <table class="table table-hover table-striped table-borderless">
+                        <thead>
+                            <tr>
+                                <th>Sr.</th>
+                                <th>Collections</th>
+
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.collections != null && Model.collections.Count() > 0)
+                            {
+
+                                int index = 0;
+                                foreach (var collection in Model.collections)
+                                {
+                                    index++;
+                                    <tr>
+                                        <td>@index</td>
+                                        <td>@collection.CollectionName</td>
+
+                                        <td>
+                                            <a id="editbtn" data-collectionname="@collection.CollectionName" data-toggle="tooltip" data-placement="top" title="Edit Collection" asp-area="Admin" asp-controller="Collection" asp-action="Edit" asp-route-id="@collection.Id" class="m-0 btn btn-info btn-xs editbtn"><span class="zmdi zmdi-edit"></span></a>
+                                            <a id="deletebtn" data-collectionname="@collection.CollectionName" data-toggle="tooltip" data-placement="top" title="Delete Collection" asp-area="Admin" asp-controller="Collection" asp-action="Delete" asp-route-id="@collection.Id" class=" m-0 btn btn-danger btn-xs"><span class="zmdi zmdi-delete"></span></a>
+                                            <a id="viewbtn" data-collectionname="@collection.CollectionName" data-toggle="tooltip" data-placement="top" title="View Objections" asp-area="Admin" asp-controller="Dashboard" asp-action="GetObjectionsByCollection" asp-route-id="@collection.Id" class="m-0 btn btn-success viewbtn btn-xs"><span class="zmdi zmdi-eye"></span></a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="4" align="center">No Record Found. Please click Add new button to add new Collection.</td>
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <div class="col-md-12 text-center nodatadivStyle">
+
+                        <div class="Para-icon-hover">
+                            <p>
+                                Create collections and objections to allow users to start practicing.
+                                <i class="zmdi zmdi-help" data-toggle="popover" data-trigger="hover" data-placement="left" title="Help ?" data-content=" You have made it to collections, which pull data for the above reports and confidence and consistency score. In order to allow users to practice you must first create a collection, which will hold objections for them to practice. Common collections include: Pricing objections, competition objections, common objections, etc. Click add new now to create a collection. Now you must create an objection. Click the green eye icon under your new collection you just created to add your first objection. Common objections include: Your price is to high, we use your competitor, etc.
+                                    Congratulations!! you are now ready to practice. Go to practice objections in order to do so, or to assign a collection to a user go to the users tab."></i>
+                            </p>
+                            @*<img src="~/ThemeStyles/images/NoDataImages/Collection.svg" />*@
+                        </div>
+                        @* <p>No Data Found</p>*@
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+    @*<div class="col-sm-12 col-md-12 col-lg-12">
+            <div class="card">
+                <div class="header clearfix">
+                    <h2 class="float-left"><strong>Objections</strong> List</h2>
+                    <a id="createbtn" asp-area="Admin" asp-controller="Dashboard" data-toggle="modal" asp-action="AddObjection" class="btn btn-primary float-right">Add New</a>
+                </div>
+                <div class="body table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Sr.</th>
+                                <th>Objections</th>
+                                <th>Responses</th>
+                                <th>Created By</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.Objections != null && Model.Objections.Count() > 0)
+                            {
+                                int index = 0;
+                                foreach (var objection in Model.Objections)
+                                {
+                                    index++;
+                                    <tr>
+                                        <td>@index</td>
+                                        <td>@objection.ObjectionName</td>
+                                        <td>@objection.ResponseKeyword</td>
+                                        <td>@objection.ManagerName</td>
+                                        <td>
+                                            <a id="editbtn" data-toggle="tooltip" data-placement="top" title="Edit Objection" asp-area="Admin" asp-controller="Dashboard" asp-action="EditObjection" asp-route-id="@objection.Id" class="m-0 btn btn-default btn-xs"><span class="zmdi zmdi-edit"></span></a>
+                                            <a id="deletebtn" data-toggle="tooltip" data-placement="top" title="Delete Objection" asp-area="Admin" asp-controller="Dashboard" asp-action="DeleteObjection" asp-route-id="@objection.Id" class=" m-0 btn btn-danger btn-xs"><span class="zmdi zmdi-delete"></span></a>
+                                            <a id="viewbtn" data-toggle="tooltip" data-placement="top" title="View Collection" asp-area="Manager" asp-controller="Dashboard" asp-action="GetObjectionsByCollection" asp-route-id="@objection.Id" class="m-0 btn btn-success btn-xs"><span class="zmdi zmdi-eye"></span></a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="4" align="center">No Record Found. Please click Add new button to add new objections.</td>
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>*@
+</div>
+
+@section Scripts{
+
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+    <script src="~/lib/BootboxJs/bootbox.min.js"></script>
+    <script src="~/lib/notify.js"></script>
+    <script src="~/lib/HoldOn.js-master/src/js/HoldOn.js"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/data.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+    <script>
+        var IsMainJsExist = "";
+        var dbCurrentStep = "@Model.currentStep";
+    </script>
+    @if (voiceboarding != true)
+    {
+        <script src="~/assets/onboarding/js/voice-onboarding.js"></script>
+    }
+    <script>
+        //function micPermission() {
+        //    $("#CreateNewModal-label").html("Mic Permission");
+        //    var htm = '';
+        //    htm = '<div class="row"><div class="col-md-12 text-center"><span><i class="fa fa-microphone"></i></span><span class="text-danger">Click on Allow to continue.</span></div><div class="text-right col-md-12"><button class="btn btn-danger btn-sm mr-2" id="cancelPermission">Cancel</button><button class="btn btn-primary btn-sm" id="grantPermission"> Grant Permission</button></div></div>';
+        //    // htm = '<div class="row"><div class="col-md-12 text-center"><span><i class="fa fa-microphone"></i></span><span class="text-danger">Parasale wants to use your microphone.</span></div><div class="text-right><button class="btn btn-danger btn-sm" id="cancelPermission">Cancel</button><button class="btn btn-primary btn-sm" style = "margin-right: 5px;" id = "grantPermission"> Grant Permission</button></div></div>';
+        //    $("#CreateNewBody").html(htm);
+        //    $("#CreateNewModal").modal('show');
+        //};
+    </script>
+    <script>
+  //      function LoadPopUp() {
+  //          $("#CreateNewModal-label").html("Voice onboarding");
+  //          var html = '';
+  //          html += '<div class="row">';
+  //          html += '<div class="col-md-12 text-center">';
+		//html += '<span class="text-danger">Please ensure your speakers are on.<br>Test your microphone, please say a few words.</span>';
+  //          html += '</div>';
+  //          html += '<div class="text-boxs" contenteditable="false"></div>';
+  //          html += '<div class="col-md-12 mb-3"><div class="progress" id="progress"><div class="progress-bar" role="progressbar" style="width: 1%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div></div></div>';
+  //          html += '<div class="col-md-12">';
+  //          html += '<span> Estimated Completion Time: <b>30-45 minutes.</b></span><br>';
+
+  //          html += '<span> Click the button to get started with demo.</span><br>';
+
+  //          html += '<div class="text-right" id="htmlAppend"><button class="btn btn-primary btn-sm" style="margin-right: 5px;" id="getStarted">Get Started</button>';
+
+  //          html += '</div>';
+  //          html += '</div>';
+  //          html += '</div>';
+  //          $("#CreateNewBody").html(html);
+  //          $("#CreateNewModal").modal('show');
+
+  //      }
+    </script>
+
+
+    @*<script src="~/assets/Othermain.js"></script>*@
+    <script type="text/javascript">
+        var collectionName;
+        var chart = "";
+        var html = "";
+        var htmlCCount = "";
+        var startDate;
+        var endDate;
+        var startDates;
+        var endDates;
+        var htmlICount = "";
+        var between = [];
+        var type;
+        var CCStype;
+
+        var objectionNotification = [];
+        $(document).on("click", "#checkAll", function () {
+            $('input:checkbox').not(this).prop('checked', this.checked);
+            objectionNotification = [];
+            $('input.generateReport:checkbox:checked').each(function () {
+                var sThisVal = $(this).attr('data-userId');
+                objectionNotification.push(sThisVal);
+            });
+        });
+
+        $("#CreateNewModal").on('hidden.bs.modal', function () {
+            objectionNotification = [];
+        });
+        $("#endDate").on("blur", function () {
+            // between=[];
+            endDate = $(this).val();
+            endDates = $(this).val();
+            startDate = $("#startDate").val();
+            startDates = $("#startDate").val();
+            // DateRange();
+
+        });
+        $("#startDate").on("blur", function () {
+
+            //between=[];
+            startDate = $(this).val();
+            startDates = $(this).val();
+            endDate = $("#endDate").val();
+            endDates = $("#endDate").val();
+            // DateRange();
+
+        });
+        function DateRange() {
+            currentDate = new Date(startDate);
+            endDate = new Date(endDate);
+            while (currentDate <= endDate) {
+                var dates = (new Date(currentDate).toISOString('YYYY-MM-DD'));
+                var res = dates.split("T");
+                between.push(res[0]);
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+        }
+
+        //function LoadPopUp() {
+        //    $("#CreateNewModal-label").html("Voice onboarding");
+        //        var html = '';
+        //        html += '<div class="row">';
+        //        html += '<div>';
+        //        html += '<span> Click the button to get started with demo.</span><br>';
+
+        //        html += '<button class="btn btn-primary" id="getStarted">Get Started</button>';
+
+        //        html += '</div>';
+        //        html += '</div>';
+        //                $("#CreateNewBody").html(html);
+
+        //                $("#CreateNewModal").modal('show');
+        //    }
+        $("#byUser").on("click", function () {
+
+                if ($(this).prop("checked")) {
+                type = "byUser";
+                init();
+                //$.ajax({
+                //    url: '/Admin/Dashboard/ForReportData',
+                //    data: { type: "byUser" },
+                //    success: function (res) {
+                //        $("#CreateNewModal-label").html("Select User(s)");
+                //        $("#CreateNewBody").html(res);
+                //        $.validator.unobtrusive.parse("#CreateNewModal");
+                //        $("#CreateNewModal").modal('show');
+                //    },
+                //});
+            }
+            else {
+
+                //destroyTable();
+            }
+        });
+
+        $("#byCollection").on("change", function () {
+
+            if ($(this).prop("checked")) {
+
+                type = "byCollection";
+                init();
+
+            }
+            else {
+
+                destroyTable();
+            }
+        });
+
+
+        $("#byManager").on("click", function () {
+            if ($(this).prop("checked")) {
+                type = "byManager";
+                init();
+
+            }
+            else {
+
+                destroyTable();
+            }
+        });
+
+        $("#CCSstartDate").on("blur", function () {
+            startDates = $(this).val();
+            endDates = $("#CCSendDate").val();
+        });
+        $("#CCSendDate").on("blur", function () {
+            endDates = $(this).val();
+            startDates = $("#CCSstartDate").val();
+        });
+
+
+        $("#CCSbyUser").on("click", function () {
+
+            CCStype = "byUser";
+            initCCS();
+        });
+
+        $("#CCSbyCollection").on("click", function () {
+
+            CCStype = "byCollection";
+            initCCS();
+
+        });
+        $("#CCSbyObjection").on("click", function () {
+            CCStype = "byObjection";
+            initCCS();
+        });
+        $("#CCSbyManager").on("click", function () {
+            CCStype = "byManager";
+            initCCS();
+        });
+        function destroyTable() {
+            window.location.reload(true);
+        }
+
+        function chartsInitial(data, between) {
+
+            $('#container').highcharts({
+                title: {
+                    text: 'Completed Objection(s)',
+                    x: -30 //center
+                },
+
+                xAxis: {
+
+                    categories: between
+                },
+                yAxis: {
+                    title: {
+                        text: 'Number of Objection(s)'
+                    },
+                    plotLines: [{
+                        value: 0,
+                        width: 1,
+                        color: '#808080'
+                    }]
+                },
+                tooltip: {
+                    valueSuffix: ' Objection(s)'
+                },
+                legend: {
+                    layout: 'vertical',
+                    align: 'right',
+                    verticalAlign: 'middle',
+                    borderWidth: 0
+                },
+                series: data
+            });
+        };
+        function CCSchartsInitial(data, between) {
+
+            $('#CCScontainer').highcharts({
+                title: {
+                    text: 'Confidence and Consistency Score (Line Chart)',
+                    x: -20 //center
+                },
+
+                xAxis: {
+
+                    categories: between
+                },
+                yAxis: {
+                    title: {
+                        text: 'Average Score'
+                    },
+                    plotLines: [{
+                        value: 0,
+                        width: 1,
+                        color: '#808080'
+                    }]
+                },
+                tooltip: {
+                    valueSuffix: ' Average Score'
+                },
+
+                series: data
+            });
+        };
+        function CCSbarChartsInit(data, between) {
+            Highcharts.chart('CCSbarcontainer', {
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: 'Confidence and Consistency Score (Bar Chart)'
+                },
+                subtitle: {
+                    text: ''
+                },
+                xAxis: {
+                    categories: between,
+                    crosshair: true
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: 'Average Score'
+                    }
+                },
+
+
+                plotOptions: {
+                    column: {
+                        pointPadding: 0.2,
+                        borderWidth: 0
+                    }
+                },
+                series: data
+            });
+        }
+        function init() {
+
+            $.ajax({
+                url: "/Admin/Dashboard/getReportData",
+                data: { type: type, startDate: startDates, endDate: endDates },
+                success: function (response) {
+
+                    if (response.completed.length != 0) {
+                        chartsInitial(response.completed, response.completedDates);
+                    }
+                    else {
+                        $('#container').hide();
+                        $('.ReportsNodata').show()
+                    }
+
+                }
+
+            })
+        }
+        function initCCS() {
+
+            $.ajax({
+                url: "/Admin/Dashboard/getCCSReportData",
+                data: { type: CCStype, startDate: startDates, endDate: endDates },
+                success: function (response) {
+                    if (response.completed.length != 0) {
+                        CCSchartsInitial(response.completed, response.completedDates);
+                        CCSbarChartsInit(response.completed, response.completedDates);
+                    }
+                    else {
+                        $('#CCScontainer').hide();
+                        $('#CCSbarcontainer').hide();
+                        $('.CAC').show()
+                    }
+                }
+
+            });
+        }
+        $(document).ready(function () {
+            //Progress
+
+            var cs; var progress;
+           
+            @*////if ('@Model.currentStep' !== null) {*@
+
+                cs = '@Model.currentStep';
+                if (cs == '') {
+                    cs = 0;
+                }
+                else {
+                    //cs = cs.split('=');
+                    cs = parseInt(cs);
+                       $("#getStarted").text('');
+            $("#getStarted").text('Restart');
+                }
+                //if (@Model.StepLevel != null) {
+            var DbStepLevel ='@Model.StepLevel';
+            if (DbStepLevel != '') {
+                    stepLevel = DbStepLevel;
+                    //Assign Value of StepLevel To VOice On boarding Step;
+
+                    progress = (DbStepLevel / 45) * 100;
+                    progress = Math.floor(progress);
+                }
+                else {
+                    progress = (1 / 45) * 100;
+                    progress = Math.floor(progress);
+                }
+                
+            //progress = (cs / 45) * 100;
+            //progress = Math.floor(progress);
+
+            $(".progress-bar").removeAttr('style');
+            $(".progress-bar").attr('style', 'width:' + progress + '%');
+            $(".progress-bar").html(progress + '%');
+        //}
+            $(".ttour-shadow").css('display', 'none');
+            //var btnHtml = '';
+            //btnHtml += '<button id="ppVoice" class="ppVoice btn btn-danger">Pause</button>';
+            //btnHtml += '<button id="skip" class="skip btn btn-light">Save For Later</button>';
+            //$('.ttour-footer').prepend(btnHtml);
+//      $(".skip").on("click", function () {
+//    var Urlpath = window.location.href;
+//    $.ajax({
+
+//        url: '/Speech/SaveLater/',
+//        data: { Urlpath:Urlpath, currentStep: currentStep },
+//        success: function (res) {
+//            $.notify("Successfully saved for later", 'success');
+//        }
+//    });
+//});
+//            $(".ppVoice").on("click", function () {
+
+//    if ($(this).text() === "Play") {
+//        $(this).text("Pause");
+//        synth.resume();
+//    }
+//    else {
+//        $(this).text("Play");
+//        synth.pause();
+//    }
+//});
+
+            var today = new Date();
+            $("#startDate").datetimepicker({
+                format: "YYYY-MM-DD"
+            });
+            $("#endDate").datetimepicker({
+                format: "YYYY-MM-DD",
+                maxDate: today
+            });
+            $("#CCSstartDate").datetimepicker({
+                format: "YYYY-MM-DD"
+            });
+            $("#CCSendDate").datetimepicker({
+                format: "YYYY-MM-DD",
+                maxDate: today
+            });
+           var st = '@(DateTime.Now.AddDays(-5).ToShortDateString())';
+        var sst = new Date(st);
+        var sdays = sst.getDate();
+        var scurr_month = sst.getMonth() + 1;
+        var scurr_year = sst.getFullYear();
+        var starts = scurr_year + "-" + scurr_month + "-" + sdays;
+        $("#startDate").val(starts);
+        $("#CCSstartDate").val(starts);
+        startDates = $("#startDate").val();
+        endDates = $("#endDate").val();
+        startDate = $("#startDate").val();
+        endDate = $("#endDate").val();
+        $("#CCSendDate").val(endDates);
+
+        // DateRange();
+        type = "byUser";
+        CCStype = "byObjection";
+        init();
+        initCCS();
+        });
+        $(document).on('click', "#createbtn1", function (e) {
+        e.preventDefault();
+        var url = $(this).attr('href');
+        $.ajax({
+        url: url,
+        method: "GET"
+        }).done(function (res) {
+        $("#CreateNewModal-label").html("Add New Objection");
+        $("#CreateNewBody").html(res);
+        $.validator.unobtrusive.parse("#CreateNewModal");
+        $("#CreateNewModal").modal();
+        });
+        });
+        $("#createbtn").click(function (e) {
+        e.preventDefault();
+        var url = $("#createbtn").attr('href');
+        $.ajax({
+        url: url,
+        method: "GET"
+        }).done(function (res) {
+        $("#CreateNewModal-label").html("Add New Collection");
+        $("#CreateNewBody").html(res);
+        $.validator.unobtrusive.parse("#CreateNewModal");
+            $("#CreateNewModal").modal();
+             Clicknext()
+        });
+        });
+
+        $(document).on('click', '#viewbtn', function (e) {
+        e.preventDefault();
+        var url = $(this).attr('href');
+        collectionName = $(this).attr('data-collectionname');
+        $.ajax({
+        url: url,
+        method: "GET"
+        }).done(function (res) {
+        $("#CreateNewModal-label").html("Objection(s) in <strong>" + collectionName+"</strong>");
+        $("#CreateNewBody").html(res);
+        $.validator.unobtrusive.parse("#CreateNewModal");
+        $("#CreateNewModal").modal();
+        });
+        });
+        $(document).on('click', '#editbtn', function (e) {
+        e.preventDefault();
+        var url = $(this).attr('href');
+
+        collectionName = $(this).attr('data-collectionname');
+        $.ajax({
+        url: url,
+        method: "GET"
+        }).done(function (res) {
+        $("#CreateNewModal-label").html("Edit " + collectionName);
+        $("#CreateNewBody").html(res);
+        $.validator.unobtrusive.parse("#CreateNewModal");
+        $("#CreateNewModal").modal();
+        });
+        });
+        $(document).on('click', '#deletebtn', function (e) {
+        e.preventDefault();
+        var url = $(this).attr('href');
+        bootbox.confirm({
+        message: "Are you Sure You Want To Delete this Record?",
+        closeButton: false, buttons: {
+        confirm: { label: 'Yes', className: 'btn-info' },
+        cancel: { label: 'No', className: 'btn-danger' }
+        },
+        callback: function (result) {
+        if (result) {
+        $.ajax({ url: url }).done(function (result) {
+        if (result) {
+        //$.notify("Data Deleted Successfully", "success");
+        //sleep(4000);
+        bootbox.alert({
+        message: "Record Deleted Successfully!",
+        callback: function () { location.reload(); }
+        });
+        }
+        });
+        }
+        }
+        });
+        });
+
+        $(document).on('click', '#btnAddAdObjections', function (e) {
+
+        e.preventDefault();
+        var frm = $("#frmAdAddObjection");
+        if (frm.valid()) {
+        var ResponseKeyword = $("#ResponseKeyword").val();
+
+        var objectionName = $("#ObjectionName").val();
+        var collectionId = $("#collectionId option:selected").val();
+        $.ajax({
+        type: "POST",
+        url:'/Admin/Dashboard/AddObjection',
+        data: { objectionName: objectionName, ResponseKeyword: ResponseKeyword, collectionId: collectionId },
+        //data: frm.serialize(),
+
+        success: function (response) {
+        $("#frmAdAddObjection").trigger('reset');
+        $.notify("Objection has been saved successfully", "success");
+        },
+        });
+        }
+        });
+
+
+    </script>
+    @if (voiceboarding != true)
+    {
+        <script>
+            var isGranted = getSessionStorageValue("isGranted");
+            var IsVisitedBefore;
+            if (sessionStorage.urlArray != undefined) {
+                IsVisitedBefore = sessionStorage.urlArray.indexOf(window.location.pathname)
+            }
+            if (isGranted == null) {
+                micPermission();
+            }
+            else {
+                if (IsVisitedBefore = -1 || IsVisitedBefore == undefined) {
+                    LoadPopUp();
+                }
+
+            }
+            //setTimeout(function () {
+            //    var isGranted = readGrantCookie("isGranted");
+            //    if (isGranted == null) {
+            //        micPermission();
+            //    }
+            //    else {
+
+            //        LoadPopUp();
+            //        // $("#grantPermission").click();
+            //    }
+
+            //}, 200)
+
+
+
+
+            //recognition.start();
+        </script>
+    }
+    @if (currentSteps != null)
+    {
+
+        <script>
+          
+                cs = '@currentSteps';
+                //cs = cs.split('=');
+                //cs = parseInt(cs[1]);
+            cs = parseInt(cs);
+            createSession(cs, false,'direct')
+                // var htmlf = '<button class="btn btn-info btn-sm" id="continueWhereLeft">Countinue where I left</button>';
+                //$("#htmlAppend").append(htmlf);
+
+                var htmlf = '<button class="btn btn-info btn-sm" id="continueWhereLeft">Countinue where I left</button><div class="text-center"><span>Step where you left onboarding: <strong>' + cs + '</strong></span></div>';
+                $("#htmlAppend").append(htmlf);
+                $(document).on("click", "#continueWhereLeft", function () {
+                    $(".ttour-shadow").css('display', 'block');
+                    checkSteps();
+                    voiceOnboarding(datas);
+                    $("#CreateNewModal").modal('hide');
+
+                });
+            
+            
+        </script>
+
+    }
+}

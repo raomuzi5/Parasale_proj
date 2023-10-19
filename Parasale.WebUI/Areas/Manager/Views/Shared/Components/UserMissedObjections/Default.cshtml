@@ -1,0 +1,43 @@
+﻿@model IEnumerable<UserListViewModel>
+
+<div hidden id="checkModel" data-checkmodel="@(Model==null || Model.Count()==0 ? 0 : 1)"></div>
+
+<div class="body table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Sr.</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Missed Objections</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Count() > 0)
+            {
+                int index = 0;
+                foreach (var item in Model)
+                {
+                    index++;
+                    <tr>
+                        <td>@index</td>
+                        <td>@item.Name</td>
+                        <td><a href="mailto:@item.Email">@item.Email</a></td>
+                        <td>@item.MissedCount</td>
+                        <td>
+                            <a id="btnPushMissedObjectionsToUser" asp-area="Manager" asp-controller="Dashboard" asp-action="PushMissedObjectionsToUser" data-username="@item.Username">Push to User</a>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="4" ifign="center">No Record Found..</td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+</div>

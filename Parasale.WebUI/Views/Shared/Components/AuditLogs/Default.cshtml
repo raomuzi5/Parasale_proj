@@ -1,0 +1,52 @@
+﻿@model IEnumerable<Parasale.Models.AuditLog>
+
+
+                    
+                        <table class="table js-basic-example my-0 mb-2">
+                            <thead>
+                                <tr>
+                                    <th>Sr.</th>
+                                    <th>Type</th>
+                                    <th>Details</th>
+                                    <th>Previous Data</th>
+                                    <th>New Data</th>
+                                    <th>Modified By</th>
+                                    <th>Modified Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model != null && Model.Count() > 0)
+                                {
+                                    int index = 0;
+                                    foreach (var log in Model)
+                                    {
+                                        index++;
+                                        <tr>
+                                            @if (!log.Field.Contains("UnAssigned"))
+                                            {
+                                                <td>@index</td>
+                                                <td>@log.Type</td>
+                                                <td><label data-container="body" data-toggle="popover" data-trigger="hover" data-content="@log.Field" >@log.Field</label></td>
+                                                <td>@log.PreviousData</td>
+                                                <td>@log.NewData</td>
+                                                <td>@log.ModifiedBy</td>
+                                                <td>@log.ModifiedDate</td>
+                                            }
+                                            else
+                                            {
+                                                index--;
+                                            }
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="7" align="center">No Record Found.</td>
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+                    
+        

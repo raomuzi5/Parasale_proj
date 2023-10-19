@@ -1,0 +1,44 @@
+﻿@model List<Parasale.Models.Objection>
+
+
+<div class="table-responsive">
+    <table class="table table-hover table-striped table-borderless">
+        <thead>
+            <tr>
+                <th>Sr.</th>
+                <th>Objections</th>
+                <th>Responses</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model != null && Model.Count() > 0)
+            {
+                int index = 0;
+                var objections = Model;
+
+                foreach (var objection in objections)
+                {
+                    index++;
+                    <tr>
+                        <td>@index</td>
+                        <td>
+                            
+                                @objection.InitialObjection
+                            
+                        </td>
+                        <td>@objection.PitchKeyword</td>
+
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="4" align="center">No Record Found. Please click Add new button to add new objections.</td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+</div>
+

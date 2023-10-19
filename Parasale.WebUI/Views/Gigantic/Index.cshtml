@@ -1,0 +1,251 @@
+﻿@*@model Parasale.WebUI.Models.DashboardIndexViewModel1*@
+@model IEnumerable<Parasale.Models.QuickCollection>
+@{
+    ViewData["Title"] = "Gigantic";
+    Layout = "~/Views/Shared/_Layout1.cshtml";
+}
+
+
+<div class="row clearfix">
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <div class="card">
+            <div class="header d-flex justify-content-between align-items-center pb-0">
+                <h2><strong>Quick Start</strong> Collections</h2>
+                <a id="createbtn" asp-area="" asp-controller="Gigantic" data-toggle="modal" asp-action="AddQuickCollection" class="btn btn-primary btn-sm mylinks">Add New</a>
+                @*<a id="createbtn" asp-area="Manager" asp-controller="Dashboard" data-toggle="modal" asp-action="AddObjection" class="btn btn-primary float-right">Add New</a>*@
+            </div>
+            <div class="body table-responsive">
+                <table class="table table-hover table-striped table-borderless">
+                    <thead>
+                        <tr>
+                            <th>Sr.</th>
+                            <th>Collections</th>
+
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model != null && Model.Count() > 0)
+                        {
+                            int index = 0;
+                            foreach (var collection in Model.OrderByDescending(o => o.QuickStart))
+                            {
+                                index++;
+                                <tr class="@((collection.QuickStart==true)?"bg-blue":"")">
+                                    <td>@index</td>
+                                    <td>@collection.CollectionName</td>
+
+                                    <td>
+                                        <a id="editbtn" data-toggle="tooltip" data-placement="top" title="Edit Collection" asp-area="" asp-controller="Gigantic" asp-action="EditQuickCollection" asp-route-id="@collection.Id" class="m-0 btn btn-info btn-xs mylinks"><span class="zmdi zmdi-edit"></span></a>
+                                        <a id="Gigviewbtn" data-collectionname="@collection.CollectionName" data-toggle="tooltip" data-placement="top" title="Objection(s) in @collection.CollectionName" asp-area="" asp-controller="Gigantic" asp-action="getQuickObjections" asp-route-id="@collection.Id" class="m-0 btn btn-success btn-xs mylinks"><span class="zmdi zmdi-eye"></span></a>
+                                        <a id="Gigmarkquick" data-toggle="tooltip" data-placement="top" title="Mark/Un-Mark as Quick Start" asp-area="" asp-controller="Gigantic" asp-action="MarkQuickStart" asp-route-id="@collection.Id" class="m-0 btn btn-success btn-xs">
+                                            @if (collection.QuickStart == true)
+                                            {<span class="zmdi zmdi-close"></span>}
+                                            else
+                                            {<span class="zmdi zmdi-check"></span>}
+                                        </a>
+                                        <a id="Gigdeletebtn" data-toggle="tooltip" data-placement="top" title="Delete Collection" asp-area="" asp-controller="Gigantic" asp-action="DeleteQuickCollection" asp-route-id="@collection.Id" class=" m-0 btn btn-danger btn-xs"><span class="zmdi zmdi-delete"></span></a>
+
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="4" align="center">No Record Found. Please click Add new button to add new Collection.</td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+    <script src="~/lib/BootboxJs/bootbox.min.js"></script>
+    <script src="~/lib/notify.js"></script>
+    <script>
+        //var collectionName;
+        //$(document).on('click', '#Gigviewbtn', function (e) {
+
+        //    e.preventDefault();
+        //    collectionName = $(this).attr('data-collectionname');
+        //    var url = $(this).attr('href');
+        //    $.ajax({
+        //        url: url,
+        //        method: "GET"
+        //    }).done(function (res) {
+        //        debugger
+        //        $("#CreateNewModal-label").html("Objection(s) in <strong>" +collectionName+"</strong>");
+        //        $("#CreateNewBody").html(res);
+        //        $.validator.unobtrusive.parse("#CreateNewModal");
+        //        $("#CreateNewModal").modal();
+        //    });
+        //});
+        $(document).on('click', '#Gigdeletebtn', function (e) {
+
+            e.preventDefault();
+
+            var url = $(this).attr('href');
+            bootbox.confirm({
+                message: "Are you Sure You Want To Delete this Collection?",
+                closeButton: false, buttons: {
+                    confirm: { label: 'Yes', className: 'btn-info' },
+                    cancel: { label: 'No', className: 'btn-danger' }
+                },
+                callback: function (result) {
+                    if (result) {
+                        $.ajax({ url: url }).done(function (result) {
+                            if (result) {
+                                bootbox.alert({
+                                    message: "Collection Deleted Successfully!",
+                                    callback: function () { location.reload(); }
+                                });
+                            }
+                        });
+                    }
+                }
+            });
+        });
+        $(document).on('click', '#Gigmarkquick', function (e) {
+            var ctmmessages = "Are you Sure? You Want To mark this as Quick Collection?";
+            e.preventDefault();
+            var url = $(this).attr('href');
+
+            var trColor = $(this).closest("tr").hasClass("bg-blue");
+
+            if (trColor) {
+                ctmmessages = "";
+                ctmmessages = "Are you Sure? You Want to un-mark this Collection from quick?"
+            }
+
+            bootbox.confirm({
+
+                message: ctmmessages,//"Are you Sure? You Want To this as Quick Collection?",
+                closeButton: false, buttons: {
+                    confirm: { label: 'Yes', className: 'btn-info' },
+                    cancel: { label: 'No', className: 'btn-danger' }
+                },
+                callback: function (result) {
+                    if (result) {
+                        $.ajax({ url: url }).done(function (result) {
+                            if (result) {
+                                bootbox.alert({
+                                    message: "Changes saved Successfully!",
+                                    callback: function () { location.reload(); }
+                                });
+                            }
+                        });
+                    }
+                }
+            });
+        });
+        $(document).on('click', "#createbtn", function (e) {
+            e.preventDefault();
+            var url = $(this).attr('href');
+            $.ajax({
+                url: url,
+                method: "GET"
+            }).done(function (res) {
+                $("#CreateNewModal-label").html("Add New Collection");
+                $("#CreateNewBody").html(res);
+                $.validator.unobtrusive.parse("#CreateNewModal");
+                $("#CreateNewModal").modal();
+            });
+        });
+        $(document).on('click', "#createbtn1", function (e) {
+            e.preventDefault();
+            var url = $(this).attr('href');
+            $.ajax({
+                url: url,
+                method: "GET"
+            }).done(function (res) {
+                $("#CreateNewModal-label").html("Add New Objection");
+                $("#CreateNewBody").html(res);
+                $.validator.unobtrusive.parse("#CreateNewModal");
+                $("#CreateNewModal").modal();
+            });
+        });
+        $(document).on('click', '#GigdeleteObjbtn', function (e) {
+            e.preventDefault();
+            var url = $(this).attr('href');
+            bootbox.confirm({
+                message: "Are you Sure You Want To Delete this Objection?",
+                closeButton: false, buttons: {
+                    confirm: { label: 'Yes', className: 'btn-info' },
+                    cancel: { label: 'No', className: 'btn-danger' }
+                },
+                callback: function (result) {
+                    if (result) {
+                        $.ajax({ url: url }).done(function (result) {
+                            if (result) {
+
+                                bootbox.alert({
+                                    message: "Objection Deleted Successfully!",
+                                    callback: function () { location.reload(); }
+                                });
+                            }
+                        });
+                    }
+                }
+            });
+        });
+
+        $(document).on('click', '#btnAddQuickCols', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            var frm = $("#frmAddQuickCol");
+            if (frm.valid()) {
+                var CollectionName = $("#CollectionName").val();
+                $.ajax({
+                    url: '/Gigantic/AddQuickCollection',
+                    type: 'POST',
+                    data: { CollectionName: CollectionName },
+                    success: function (response) {
+                        if (response.success) {
+                            $("#frmAddQuickCol").trigger('reset');
+                            $.notify("Collection has been added successfully", "success");
+                        }
+                    }
+                });
+            }
+        });
+        $(document).on('click', '#btnAddQuickObjection', function (e) {
+
+            e.preventDefault();
+            e.stopPropagation();
+
+            var frm = $("#frmAddQuickObjection");
+            if (frm.valid()) {
+
+                var ObjectionName = $("#ObjectionName").val();
+                var ResponseKeyword = $("#ResponseKeyword").val();
+                var collectionId = $("#collectionId option:selected").val();
+                $.ajax({
+                    url: '/Gigantic/AddQuickObjection',
+                    type: 'POST',
+                    data: { ObjectionName: ObjectionName, ResponseKeyword: ResponseKeyword, collectionId: collectionId },
+                    success: function (response) {
+                        if (response.success) {
+                            $("#frmAddQuickObjection").trigger('reset');
+                            $.notify("Objection has been added successfully", "success");
+                        }
+                    }
+                });
+            }
+        });
+        $(document).on('click', '.close', function () {
+            window.location.reload(true);
+        });
+        $(document).on('keypress', function (e) {
+            if (e.which == 13) {
+                $("#btnAddQuickCols").click();
+            }
+        });
+    </script>
+}

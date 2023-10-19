@@ -1,0 +1,44 @@
+﻿@model IEnumerable<PushedObjectionsViewModel>
+
+@{
+
+}
+
+
+<div hidden id="checkModel" data-checkmodel="@(Model==null || Model.Count()==0 ? 0 : 1)"></div>
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Sr.</th>
+                <th>Objection</th>
+                <th>Pushed by</th>
+                <th>Pushed on</th>
+                <th>Practiced</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Count() > 0)
+            {
+                int index = 0;
+
+                foreach (var item in Model)
+                {
+                    index++;
+                    <tr>
+                        <td>@index</td>
+                        <td>@item.ObjectionName</td>
+                        <td>@item.PushedBy</td>
+                        <td>@item.ObjectionTime</td>
+                        <td>@(item.IsPracticed ? "Completed" : "Pending")</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr><td colspan="5" align="center">No Record Found.</td></tr>
+
+            }
+        </tbody>
+    </table>
+</div>

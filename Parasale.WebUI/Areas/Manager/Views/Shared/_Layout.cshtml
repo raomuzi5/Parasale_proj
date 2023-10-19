@@ -1,0 +1,492 @@
+﻿
+<!doctype html>
+<html class="no-js " lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <meta name="description" content="Responsive Bootstrap 4 and web Application ui kit.">
+    <title>@ViewData["Title"] :: Parasale Manager</title>
+    <link rel="icon" href="~/favicon.png" type="image/x-icon"> <!-- Favicon-->
+    <link rel="stylesheet" href="~/ThemeStyles/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.11/css/bootstrap-select.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.css" />
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css">
+    @*<link rel="stylesheet" href="~/ThemeStyles/css/jquery-jvectormap-2.0.3.min.css" />
+        <link rel="stylesheet" href="~/ThemeStyles/css/morris.min.css" />*@
+    <link rel="stylesheet" href="~/ThemeStyles/Datatable/jquery-datatable/dataTables.bootstrap4.min.css" />
+    <!-- Custom Css -->
+    <link href="~/assets/onboarding/css/tour.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/ThemeStyles/css/main.css">
+    <link rel="stylesheet" href="~/ThemeStyles/css/color_skins.css">
+    <link href="~/ThemeStyles/css/custome.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.min.css" />
+    @RenderSection("Styles", required: false)
+</head>
+<body class="theme-purple">
+    <button id="autoplay" class="d-none">play</button>
+    <!-- Page Loader -->
+    <div class="page-loader-wrapper">
+        <div class="loader">
+            <p>Please wait...</p>
+        </div>
+    </div>
+    <!-- Overlay For Sidebars -->
+    <div class="overlay"></div>
+
+    <!-- Top Bar -->
+    <nav class="navbar p-l-5 p-r-5">
+        <ul class="nav navbar-nav navbar-left">
+            <li>
+                <div class="navbar-header">
+                    <a href="javascript:void(0);" class="bars"></a>
+                    <a class="navbar-brand" asp-area="Manager" asp-controller="Dashboard" asp-action="Index">
+                        <span class="m-l-10">
+                            <img src="~/assets/img/parasale.png" height="28px" />
+                            <span class="ctm-logotxt">Parasale</span>
+                        </span>
+                    </a>
+                </div>
+            </li>
+            <li><a href="javascript:void(0);" class="ls-toggle-btn" data-close="true"><i class="zmdi zmdi-swap"></i></a></li>
+
+
+            @*<li class="hidden-sm-down">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search...">
+                        <span class="input-group-addon"><i class="zmdi zmdi-search"></i></span>
+                    </div>
+                </li>*@
+            <li class="float-right">
+                @*<a asp-area="Admin" asp-controller="Account" asp-action="ChangePassword" class="mega-menu" data-close="true">@User.Identity.Name.ToUpper()</a>*@
+                <a asp-area="" asp-controller="Account" asp-action="Logout" title="Logout" class="mega-menu" data-close="true"><i class="zmdi zmdi-power"></i></a>
+            </li>
+            <li class="dropdown float-right">
+                <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button">
+                    @*<i class="zmdi zmdi-notifications"></i>
+                        <div class="notify"><span class="heartbit"></span><span class="point"></span></div>*@
+                    @(User.Identity.Name.Substring(0, 1).ToUpper() + User.Identity.Name.Substring(1).ToLower()) <i class="zmdi zmdi-caret-down"></i>
+                </a>
+                <ul class="dropdown-menu pullDown" style="left: -165px; width: 230px;">
+                    <li>
+                        <a class="dropdown-item" asp-area="Manager" asp-controller="Dashboard" asp-action="PracticeObjections">
+                            Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" asp-area="Manager" asp-controller="Account" asp-action="ChangePassword">
+                            Change Password
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Left Sidebar -->
+    <aside id="leftsidebar" class="sidebar">
+        <div class="menu">
+            <ul class="list">
+                <li>
+                    <div class="user-info">
+                        <div class="image"><a class="ctm-image" asp-area="Manager" asp-controller="Dashboard" asp-action="PracticeObjections" asp-route-id=""><img src="~/assets/img/parasale.png" alt="User"></a></div>
+                        <div class="detail">
+                            <h4> @(User.Identity.Name.Substring(0, 1).ToUpper() + User.Identity.Name.Substring(1).ToLower())</h4>
+                            <small>Manager</small>
+                        </div>
+                        @*<a title="facebook" href="javascript:void(0);"><i class="zmdi zmdi-facebook"></i></a>
+                            <a title="twitter" href="javascript:void(0);"><i class="zmdi zmdi-twitter"></i></a>
+                            <a title="instagram" href="javascript:void(0);"><i class="zmdi zmdi-instagram"></i></a>*@
+                    </div>
+                </li>
+                @*<li class="header">MAIN</li>*@
+                <li class="practiceObjections">
+                    <a asp-area="Manager" asp-controller="Dashboard" asp-action="PracticeObjections"><i class="zmdi zmdi-audio"></i><span>Practice Objections</span> </a>
+                </li>
+                <li class="">
+                    <a asp-area="Manager" asp-controller="Dashboard" asp-action="ManageCollections"><i class="zmdi zmdi-collection-bookmark"></i><span>Manage Collections</span> </a>
+                </li>
+                <li class="">
+                    <a asp-area="Manager" asp-controller="Dashboard" asp-action="ManageTeamsAndUsers"><i class="zmdi zmdi-settings"></i><span>Manage Teams & Users</span> </a>
+                </li>
+                <li class="">
+                    <a asp-area="Manager" asp-controller="Dashboard" asp-action="Reports"><i class="zmdi zmdi-view-carousel"></i><span>Reports</span> </a>
+                </li>
+                <li class="auditLogs">
+                    <a asp-area="Manager" asp-controller="Dashboard" asp-action="AuditLog"><i class="zmdi zmdi-comment-list"></i><span>Audit Logs</span> </a>
+
+                </li>
+                <li class="tutorial">
+                    @*<a asp-area="Manager" asp-controller="Dashboard" asp-action="Index" asp-route-id="tutorial"><i class="zmdi zmdi-tv-play"></i><span>Tutorial</span> </a>*@
+                    <a href="#" id="tutorial"><i class="zmdi zmdi-tv-play"></i><span>Tutorial</span> </a>
+                </li>
+                <li class="">
+                    <a asp-area="Manager" asp-controller="Dashboard" asp-action="ResetAccount" asp-route-id=""><i class="zmdi zmdi-refresh"></i><span>Reset Account</span> </a>
+                </li>
+
+            </ul>
+        </div>
+        <div class="text-muted text-center">Version: 1.0.0</div>
+    </aside>
+
+    <!-- Main Content -->
+    <section class="content home">
+        <div class="block-header">
+            <div class="row">
+                <div class="col-lg-5 col-md-5 col-sm-12">
+                    <h2>
+                        @*Dashboard*@
+                        <small id="txtwelcome"></small>
+                    </h2>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            @Vereyon.Web.FlashMessageHtmlHelper.RenderFlashMessages(Html)
+            @RenderBody()
+        </div>
+    </section>
+    <!-- The Modal -->
+    <div class="modal" id="CreateNewModal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h5 class="modal-title m-0" id="CreateNewModal-label"></h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <div id="CreateNewBody" class="modal-body">
+
+                </div>
+
+                <!-- Modal footer -->
+                @*<div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    </div>*@
+
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="objectionmodal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title m-0" id="objectionmodal-label"></h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <div id="objectionmodalbody" class="modal-body">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Jquery Core Js -->
+    <!--<script src="~/ThemeStyles/js/libscripts.bundle.js"></script> <!-- Lib Scripts Plugin Js ( jquery.v3.2.1, Bootstrap4 js) -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="~/assets/js/config.js"></script>
+    <script>
+
+        username = '@ConfigClass.Username';
+
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="~/ThemeStyles/js/vendorscripts.bundle.js"></script> <!-- slimscroll, waves Scripts Plugin Js -->
+    @*<script src="~/ThemeStyles/js/morrisscripts.bundle.js"></script><!-- Morris Plugin Js -->
+        <script src="~/ThemeStyles/js/jvectormap.bundle.js"></script> <!-- JVectorMap Plugin Js -->
+        <script src="~/ThemeStyles/js/knob.bundle.js"></script> <!-- Jquery Knob, Count To, Sparkline Js -->*@
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="~/ThemeStyles/Datatable/datatablescripts.bundle.js"></script>
+    <script src="~/ThemeStyles/Datatable/jquery-datatable.js"></script>
+    <script src="~/ThemeStyles/js/mainscripts.bundle.js"></script>
+    <script src="~/ThemeStyles/js/index.js"></script>
+    <script src="~/assets/onboarding/js/tour.js"></script>
+    <script>
+
+        var url;
+        var istrue;
+        $(document).ready(function () {
+            url = window.location.href;
+            istrue = url.includes("parasale.co");
+            $(document).on('click', ".mylinks", function (e) {
+                e.preventDefault();
+                var $this = $(this);
+                var url = $this.attr('href');
+
+                $.ajax({
+                    url: url,
+                    method: "GET"
+                }).done(function (res) {
+                    $("#CreateNewModal-label").html($this.attr('title'));
+                    $("#CreateNewBody").html(res);
+                    $.validator.unobtrusive.parse("#CreateNewModal");
+                    $("#CreateNewModal").modal();
+                });
+            });
+        });
+        //    <!-- Hotjar Tracking Code for www.parasale.co -->
+        if (istrue) {
+            (function (h, o, t, j, a, r) {
+                h.hj = h.hj || function () { (h.hj.q = h.hj.q || []).push(arguments) };
+                h._hjSettings = { hjid: 1595804, hjsv: 6 };
+                a = o.getElementsByTagName('head')[0];
+                r = o.createElement('script'); r.async = 1;
+                r.src = t + h._hjSettings.hjid + j + h._hjSettings.hjsv;
+                a.appendChild(r);
+            })(window, document, 'https://static.hotjar.com/c/hotjar-', '.js?sv=');
+        }
+
+
+        jQuery(function ($) {
+            var path = window.location.href; // because the 'href' property of the DOM element is the absolute path
+            $('.list li a').each(function () {
+                if (this.href === path) {
+                    $(this).parent().addClass('active');
+                }
+            });
+        });
+    </script>
+    <script>
+        //   $("#deleteData").on("click", function (e) {
+        //    e.preventDefault();
+        //    $.ajax({
+        //        url: '/Manager/Dashboard/Delete',
+        //        success: function (res) {
+        //            $("#CreateNewModal-label").html("Delete Data");
+        //            $("#CreateNewBody").html(res);
+        //             $(".close").on("click", function () {
+        //                window.location.reload(true);
+        //            });
+        //            $("#CreateNewModal").modal('show');
+        //        }
+        //    });
+        //   });
+        //  $(document).on('click', '#resetData', function (e) {
+        //    e.preventDefault();
+        //    var url = '/Manager/Dashboard/DeleteAllData';
+        //    bootbox.confirm({
+        //        message: "Are you Sure You Want To Delete All Data?",
+        //        closeButton: false, buttons: {
+        //            confirm: { label: 'Yes', className: 'btn-info' },
+        //            cancel: { label: 'No', className: 'btn-danger' }
+        //        },
+        //        callback: function (result) {
+        //            if (result) {
+        //                $.ajax({ url: url }).done(function (result) {
+        //                    if (result) {
+        //                        bootbox.alert({
+        //                            message: "Data Deleted Successfully!",
+        //                            callback: function () {
+        //                                $("#deleteData").click(); //getDataforDeletion(); }
+        //                        });
+        //                    }
+        //                });
+        //            }
+        //        }
+        //    });
+        //});
+
+        //var dataArray = [];
+        //$(document).on("change", ".deleteD", function () {
+        //    if ($(this).is(':checked')) {
+        //        dataArray.push($(this).attr('id'));
+        //    }
+        //    else {
+        //        dataArray.splice($.inArray($(this).attr('id'), dataArray), 1);
+        //    }
+        //});
+        //$(document).on("click", "#deleteSelected", function (e) {
+
+        //    e.preventDefault();
+
+        //    var url = '/Manager/Dashboard/Delete';
+        //    bootbox.confirm({
+        //        message: "Are you Sure You Want To Delete All Data?",
+        //        closeButton: false, buttons: {
+        //            confirm: { label: 'Yes', className: 'btn-info' },
+        //            cancel: { label: 'No', className: 'btn-danger' }
+        //        },
+        //        callback: function (result) {
+        //            if (result) {
+        //                $.ajax({
+        //                    type: 'POST', url: url, traditional: true, data: { dataArray: dataArray },
+        //                }).done(function (result) {
+        //                    if (result) {
+        //                        bootbox.alert({
+        //                            message: "Data Deleted Successfully!",
+        //                            callback: function () { $("#deleteData").click();//getDataforDeletion(); }
+        //                        });
+        //                    }
+        //                });
+        //            }
+        //        }
+        //    });
+
+        //});
+        //  $(document).on('click', '#resetData', function (e) {
+        //    e.preventDefault();
+        //    var url = '/Manager/Dashboard/DeleteAllData';
+        //    bootbox.confirm({
+        //        message: "Are you Sure You Want To Delete All Data?",
+        //        closeButton: false, buttons: {
+        //            confirm: { label: 'Yes', className: 'btn-info' },
+        //            cancel: { label: 'No', className: 'btn-danger' }
+        //        },
+        //        callback: function (result) {
+        //            if (result) {
+        //                $.ajax({ url: url }).done(function (result) {
+        //                    if (result) {
+        //                        bootbox.alert({
+        //                            message: "Data Deleted Successfully!",
+        //                            callback: function () { $("#deleteData").click();//getDataforDeletion(); }
+        //                        });
+        //                    }
+        //                });
+        //            }
+        //        }
+        //    });
+        //});
+
+        //var dataArray = [];
+        //$(document).on("change", ".deleteD", function () {
+        //    if ($(this).is(':checked')) {
+        //        dataArray.push($(this).attr('id'));
+        //    }
+        //    else {
+        //        dataArray.splice($.inArray($(this).attr('id'), dataArray), 1);
+        //    }
+        //});
+        //$(document).on("click", "#deleteSelected", function (e) {
+
+        //    e.preventDefault();
+
+        //    var url = '/Manager/Dashboard/Delete';
+        //    bootbox.confirm({
+        //        message: "Are you Sure You Want To Delete All Data?",
+        //        closeButton: false, buttons: {
+        //            confirm: { label: 'Yes', className: 'btn-info' },
+        //            cancel: { label: 'No', className: 'btn-danger' }
+        //        },
+        //        callback: function (result) {
+        //            if (result) {
+        //                $.ajax({
+        //                    type: 'POST', url: url, traditional: true, data: { dataArray: dataArray },
+        //                }).done(function (result) {
+        //                    if (result) {
+        //                        bootbox.alert({
+        //                            message: "Data Deleted Successfully!",
+        //                            callback: function () { location.reload(); }
+        //                        });
+        //                    }
+        //                });
+        //            }
+        //        }
+        //    });
+
+        //});
+        function getDataforDeletion() {
+            $.ajax({
+                url: '/Manager/Dashboard/Delete',
+                success: function (res) {
+                    $("#CreateNewModal").modal('hide');
+                    $("#CreateNewModal-label").html("Delete Data");
+                    $("#CreateNewBody").html(html);
+                    $("#CreateNewModal").modal('show');
+                }
+            });
+        }
+        $(".Para-icon-hover i").hover(function () {
+
+            $('body').addClass('Para-popover-width')
+        }, function () {
+            $('body').removeClass('Para-popover-width')
+        });
+    </script>
+    <script>
+
+
+    </script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
+
+
+@*<!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Parasale Admin Panel</title>
+
+        <environment include="Development">
+            <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+            <link rel="stylesheet" href="~/css/site.css" />
+        </environment>
+        <environment exclude="Development">
+            <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
+                  asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
+                  asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+            <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+        </environment>
+    </head>
+    <body>
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Parasale Admin Panel</a>
+                </div>
+                <div class="navbar-collapse collapse pull-right">
+                    <ul class="nav navbar-nav">
+                        <li><a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">@User.Identity.Name</a></li>
+                        <li><a asp-area="" asp-controller="Account" asp-action="Logout">Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <partial name="_CookieConsentPartial" />
+
+        <div class="container body-content">
+            @RenderBody()
+            <hr />
+            <footer>
+                <p>&copy; 2019 - Parasale</p>
+            </footer>
+        </div>
+
+        <environment include="Development">
+            <script src="~/lib/jquery/dist/jquery.js"></script>
+            <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+            <script src="~/js/site.js" asp-append-version="true"></script>
+        </environment>
+        <environment exclude="Development">
+            <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"
+                    asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+                    asp-fallback-test="window.jQuery"
+                    crossorigin="anonymous"
+                    integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT">
+            </script>
+            <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
+                    asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
+                    asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
+                    crossorigin="anonymous"
+                    integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
+            </script>
+            <script src="~/js/site.min.js" asp-append-version="true"></script>
+        </environment>
+
+        @RenderSection("Scripts", required: false)
+    </body>
+    </html>*@

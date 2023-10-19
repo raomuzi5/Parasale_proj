@@ -1,0 +1,144 @@
+﻿@model DashboardIndexViewModel
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@section Styles{
+    <style>
+      
+        .checkbox label {
+            position: absolute;
+        }
+    </style>
+}
+
+<div class="row clearfix">
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <div class="card">
+            <div class="header d-flex align-items-center justify-content-between">
+                <h2 class="float-left"><strong>Objections</strong> List</h2>
+                <a id="createbtn" asp-area="Admin" asp-controller="Dashboard" data-toggle="modal" asp-action="AddObjection" class="btn btn-primary btn-sm">Add New</a>
+            </div>
+            <div class="body table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Sr.</th>
+                            <th>Objections</th>
+                            <th>Responses</th>
+                            <th>Created By</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Objections != null && Model.Objections.Count() > 0)
+                        {
+                            int index = 0;
+                            foreach (var objection in Model.Objections)
+                            {
+                                index++;
+                                <tr>
+                                    <td>@index</td>
+                                    <td>@objection.ObjectionName</td>
+                                    <td>@objection.ResponseKeyword</td>
+                                    <td>@objection.ManagerName</td>
+                                    <td>
+                                        <a id="editbtn" data-toggle="tooltip" data-placement="top" title="Edit Objection" asp-area="Admin" asp-controller="Dashboard" asp-action="EditObjection" asp-route-id="@objection.Id" class="m-0 btn btn-default btn-xs"><span class="zmdi zmdi-edit"></span></a>
+                                        <a id="deletebtn" data-toggle="tooltip" data-placement="top" title="Delete Objection" asp-area="Admin" asp-controller="Dashboard" asp-action="DeleteObjection" asp-route-id="@objection.Id" class=" m-0 btn btn-danger btn-xs"><span class="zmdi zmdi-delete"></span></a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="5" align="center">No Record Found. Please click Add new button to add new objections.</td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts{
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+    <script src="~/lib/BootboxJs/bootbox.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+            $("#txtwelcome").html("View Summary and Manage Objections");
+        });
+
+        $("#createbtn").click(function (e) {
+            e.preventDefault();
+            var url = $("#createbtn").attr('href');
+            $.ajax({
+                url: url,
+                method: "GET"
+            }).done(function (res) {
+                $("#CreateNewModal-label").html("Add New Objection");
+                $("#CreateNewBody").html(res);
+                $.validator.unobtrusive.parse("#CreateNewModal");
+                $("#CreateNewModal").modal();
+            });
+        });
+
+          $(document).on('click', '#viewbtn', function (e) {
+            e.preventDefault();
+               var url = $(this).attr('href');
+               $.ajax({
+                   url: url,
+                   method: "GET"
+            }).done(function (res) {
+                $("#CreateNewModal-label").html("");
+                $("#CreateNewBody").html(res);
+                $.validator.unobtrusive.parse("#CreateNewModal");
+                $("#CreateNewModal").modal();
+            });
+        });
+        $(document).on('click', '#editbtn', function (e) {
+            e.preventDefault();
+            var url = $(this).attr('href');
+            $.ajax({
+                url: url,
+                method: "GET"
+            }).done(function (res) {
+                $("#CreateNewModal-label").html("Edit Objection");
+                $("#CreateNewBody").html(res);
+                $.validator.unobtrusive.parse("#CreateNewModal");
+                $("#CreateNewModal").modal();
+            });
+        });
+        $(document).on('click', '#deletebtn', function (e) {
+            e.preventDefault();
+            var url = $(this).attr('href');
+            bootbox.confirm({
+                message: "Are you Sure You Want To Delete this Record?",
+                closeButton: false, buttons: {
+                    confirm: { label: 'Yes', className: 'btn-info' },
+                    cancel: { label: 'No', className: 'btn-danger' }
+                },
+                callback: function (result) {
+                    if (result) {
+                        $.ajax({ url: url }).done(function (result) {
+                            if (result) {
+                                //$.notify("Data Deleted Successfully", "success");
+                                //sleep(4000);
+                                bootbox.alert({
+                                    message: "Record Deleted Successfully!",
+                                    callback: function () { location.reload(); }
+                                });
+                            }
+                        });
+                    }
+                }
+            });
+        });
+    </script>
+}

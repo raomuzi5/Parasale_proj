@@ -1,0 +1,94 @@
+﻿@model UsersCheckViewModel
+
+@{
+    ViewData["Title"] = "GetUserLists";
+}
+
+
+<div class="row clearfix">
+    <div class="col-md-6">
+        <div class="card h-100 mb-0">
+            <div class="header clearfix">
+                <h2 class="float-left"><strong>Signed Up</strong> Users</h2>
+            </div>
+            
+            <div class="body">
+
+                @if (Model.invitesList != null)
+                {
+                    <ul class="list-group">
+
+                        @foreach (var signed in Model.invitesList)
+                        {
+                            if (signed.IsSigned)
+                            {
+                                <li class="list-group-item">@signed.Email <button class="badge badge-success m-0 float-right">Signed</button></li>
+                            }
+                        }
+
+                    </ul>
+                }
+                else
+                {
+                    <div>No Record Found.</div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card h-100 mb-0">
+           
+            <div class="header clearfix">
+                <h2 class="float-left"><strong>Not Signed Up</strong> Yet</h2>
+            </div>
+            <div class="body">
+               
+                    <ul class="list-group">
+                        @foreach (var signed in Model.invitesList)
+                        {
+                            if (!signed.IsSigned)
+                            {
+                                <li class="list-group-item">@signed.Email <button class="badge badge-danger m-0 float-right">Not Signed</button></li>
+                            }
+                        }
+
+                    </ul>
+                
+           
+
+            </div>
+        </div>
+    </div>
+    @*<div class="col-md-6">
+        <div class="card h-100 mb-0">
+            <div class="body">
+                <ul class="list-group">
+                    @foreach (var locked in Model.appUserList)
+                    {
+                        <li class="list-group-item">@locked.Email<button class=" badge badge-info m-0 float-right" id="unlockUser" data-id="@locked.Id">Unlock</button></li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>*@
+</div>
+
+
+@section Scripts{ 
+
+    <script>
+        $("#unlockUser").on("click", function () {
+            var id = $(this).attr('data-id');
+            
+            $.ajax({
+                url: '/Admin/Dashboard/ApproveUser',
+                data: { id: id },
+                success: function () {
+                    window.location.reload(true);
+                }
+
+            })
+        });
+    </script>
+
+}

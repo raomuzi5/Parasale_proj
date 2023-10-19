@@ -1,0 +1,55 @@
+﻿@model IEnumerable<UserListViewModel>
+
+
+<div class="body table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Add</th>
+                <th>Name</th>
+                <th>Username</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Count() > 0)
+            {
+                int index = 0;
+                foreach (var user in Model)
+                {
+                    index++;
+                    <tr>
+                        <td>
+                            @if (user.IsAlreadyTeamMember)
+                            {
+                                @*<input id="checkisteammember" type="checkbox" checked data-userId="@user.Id" />*@
+                                <div class="checkbox ctmCheckbox">
+                                    <input id="@user.Id" class="checkisteammember" type="checkbox" checked data-userId="@user.Id">
+                                    <label for="@user.Id"></label>
+                                </div>
+                            }
+                            else
+                            {
+                                @*<input id="checkisteammember" type="checkbox" data-userId="@user.Id" />*@
+                                <div class="checkbox ctmCheckbox">
+                                    <input id="@user.Id" class="checkisteammember" type="checkbox" data-userId="@user.Id">
+                                    <label for="@user.Id"></label>
+                                </div>
+                            }
+                        </td>
+                        <td>@user.Name</td>
+                        <td>@user.Username</td>
+                        <td>@user.Email</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="4" align="center">No Record Found..</td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+</div>

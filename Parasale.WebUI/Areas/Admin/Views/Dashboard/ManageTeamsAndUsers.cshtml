@@ -1,0 +1,548 @@
+﻿@model InvitesViewModel;
+
+@{
+    ViewData["Title"] = "Manage Teams and Users";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    var voiceboarding = Model.voiceboarding;
+}
+<style>
+    #accordion [aria-expanded="true"] {
+        color: #fff;
+        background: #8c99e0;
+    }
+
+    #accordion .card-header {
+        border: none;
+    }
+
+    #accordion [aria-expanded="true"] + [data-parent="#accordion"] .card-body {
+        border: 1px solid #8c99e0;
+    }
+</style>
+@section Styles{
+    <style>
+        .zmdi-help {
+            font-size: 50px;
+        }
+
+        .ctm-Spinner {
+            position: relative;
+            width: 125px;
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+
+
+        .checkbox label {
+            position: absolute;
+        }
+    </style>
+    <style>
+
+        #accordion .card-header {
+            background-color: rgba(140, 153, 224, 0.71);
+        }
+
+            #accordion .card-header h6 {
+                color: #fff;
+            }
+    </style>
+    <link href="~/lib/HoldOn.js-master/src/css/HoldOn.css" rel="stylesheet" />
+}
+<style>
+    .bootbox.modal .modal-footer {
+        justify-content: flex-end;
+    }
+</style>
+<link href="~/assets/css/tagify.css" rel="stylesheet" />
+<div class="row clearfix">
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <div class="card">
+            <button id="autoplay" class="d-none">play</button>
+            <div class="header clearfix pb-0">
+                <h2 class="float-left"><strong>User</strong> Email</h2>
+            </div>
+            <div class="body">
+                <div class="row ">
+                    <div class="col-md-5 userInvites">
+                        <form asp-action="InviteUsers" id="userInvites">
+
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <div class="form-group">
+                                <label asp-for="Invites.Email" class="control-label"></label>
+                                <input asp-for="Invites.Email" class="form-control py-1" />
+                                <span id="error" class="text-danger d-none">This is required field.</span>
+                            </div>
+
+                        </form>
+                        @if (Model != null && Model.success == true)
+                        {
+                            <div class="alert alert-info">Invitation(s) sent <strong>Successfully</strong></div>
+                        }
+                    </div>
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <label class="w-100">&nbsp;</label>
+                            <button type="button" class="btn btn-primary m-0" id="inviteUsers">Invite</button>
+                            <button type="button" class="btn btn-primary m-0 d-none tagsremoveAllBtn" id="">Remove Tags</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@await Component.InvokeAsync("InviteUserList")
+
+
+
+<div class="row clearfix " style="margin-top: 30px;">
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <div class="card teamsss">
+            <div class="header pb-0">
+                <button id="autoplay" class="d-none">play</button>
+                <h2><strong>Teams</strong></h2>
+            </div>
+            <div class="body d-none">
+                <div class="col-xl-3 col-lg-5 col-md-12">
+                    <div class="card member-card" style="
+    box-shadow: 0 0 10px #00000026;
+">
+                        <div class="header l-parpl" style="
+    /* vertical-align: middle; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #6572b8 !important;
+">
+                            <h4 class="m-t-0 mb-0">Team Name</h4>
+                            <p class="mb-0">Role Goes here</p>
+                        </div>
+                        <div class="member-img">
+                            <a href="profile.html" class="">
+
+                            </a>
+                        </div>
+                        <div class="body">
+                            <div class="col-12">
+
+
+                            </div>
+
+                            <div class="row">
+                                <div class="col-12 mb-5">
+                                    <h2 class="mb-1">98</h2>
+                                    <small>Total members</small>
+                                </div>
+                                <div class="col-12">
+                                    <div>
+                                        <button class="btn btn-primary btn-round">View</button>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="body ">
+                @if (Model.teams.Count() > 0)
+                {
+                    <div id="accordion">
+                        @foreach (var mode in Model.teams.Where(o => o.IsManager).ToList())
+                        {
+                            <div class="card mb-3 userTeam">
+                                <div class="card-header py-3 d-flex justify-content-between align-items-center" id="" data-toggle="collapse" data-target="#collapse@(mode.Id)">
+                                    <div class="">
+                                        <h6 class="mb-0">
+                                            @mode.Username
+                                        </h6>
+                                    </div>
+                                    <div class="">
+                                        <a id="addnewbtn" data-toggle="tooltip" data-placement="top" title="Manage Team for @mode.Username" asp-area="Admin" asp-controller="User" asp-action="UsersList" asp-route-id="@mode.Id" data-managerUserId="@mode.Id" class="m-0 btn bg-light text-dark btn-sm mylinks addnewbtn"><span class="zmdi zmdi-plus"></span></a>
+                                    </div>
+                                </div>
+
+                                <div id="collapse@(mode.Id)" class="collapse " data-parent="#accordion">
+                                    <div class="card-body ">
+                                        <div class="row">
+                                            <div class="col-md-5">
+                                                <table class="table table-striped table-borderless">
+                                                    <tbody>
+                                                        @foreach (var child in Model.teams.Where(o => o.ManagerUserId == mode.Id && !o.IsManager).ToList())
+                                                        {
+                                                            <tr>
+                                                                <td>@child.Username</td>
+                                                                <td>@child.Email</td>
+                                                                @*<td>
+                                                                        <a id="removebtn" data-toggle="tooltip" data-placement="top" title="Remove Team Member" asp-area="Admin" asp-controller="User" asp-action="RemoveFromTeam" asp-route-id="@child.Id" class="m-0 btn btn-danger btn-xs"><span class="zmdi zmdi-close"></span></a>
+                                                                    </td>*@
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                    </div>
+                }
+                else
+                {
+                    <div class="col-md-12 text-center nodatadivStyle">
+                        <div class="ND_Img_Wrap">
+                            <p>No Data Found</p>
+                            <img src="~/ThemeStyles/images/NoDataImages/Teams.svg" />
+                        </div>
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row clearfix">
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <div class="card">
+            <div class="header clearfix pb-0">
+                <h2 class="float-left"><strong>Users</strong> List</h2>
+            </div>
+            <div class="body">
+                <button id="autoplay" class="d-none">play</button>
+                <div class="table-responsive">
+                    @if (Model.userList != null && Model.userList.Count() > 0)
+                    {
+                        <table class="table table-hover table-striped table-borderless">
+                            <thead>
+                                <tr>
+                                    <th>Sr.</th>
+                                    <th>Name</th>
+                                    <th>Username</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    int index = 0;
+                                    foreach (var user in Model.userList)
+                                    {
+                                        index++;
+                                        <tr>
+                                            <td>@index</td>
+                                            <td>@user.Name</td>
+                                            <td>@user.Username</td>
+                                            <td><a href="mailto:@user.Email">@user.Email</a></td>
+                                            <td>@(user.IsManager ? "Manager" : "User")</td>
+                                            <td>
+                                                @if (user.IsManager)
+                                                {
+                                                    <a id="btnRemoveFromManager" data-username="@user.Name" data-toggle="tooltip" data-placement="top" title="Remove from Manager" asp-area="Admin" asp-controller="User" asp-action="AddToManager" asp-route-Id="@user.Id" class="m-0 btn btn-info btn-xs manager">
+                                                        <span class="zmdi zmdi-close"></span>
+                                                        @*Remove from Managers*@
+                                                    </a>
+                                                    <span> | </span>
+                                                    <a id="btnassignuser" data-username="@user.Name" data-toggle="tooltip" data-placement="top" title="Assign Users" asp-area="Admin" asp-controller="User" asp-action="UsersList" asp-route-Id="@user.Id" class="m-0 btn btn-info btn-xs ausers" data-managerUserId="@user.Id">
+                                                        <span class="zmdi zmdi-accounts-add"></span>
+                                                    </a>
+                                                    <span> | </span>
+                                                    <a id="btnteamview" data-username="@user.Name" data-toggle="tooltip" data-placement="top" title="View Team" asp-area="Admin" asp-controller="User" asp-action="TeamView" asp-route-Id="@user.Id" class="m-0 btn btn-info btn-xs teamView" data-managerUserId="@user.Id">
+                                                        <span class="zmdi zmdi-eye"></span>
+                                                    </a>
+                                                }
+                                                else
+                                                {
+                                                    @if (user.IsAlreadyTeamMember)
+                                                    {
+                                                        <span>
+                                                            Already in Team
+                                                        </span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a id="btnAddToManager" data-username="@user.Name" data-toggle="tooltip" data-placement="top" title="Make Manager" asp-area="Admin" asp-controller="User" asp-action="AddToManager" asp-route-Id="@user.Id" class="m-0 btn btn-info btn-xs manager">
+                                                            <span class="zmdi zmdi-account-add"></span>
+                                                        </a>
+                                                    }
+
+                                                }
+
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+
+
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <div class="col-md-12 text-center nodatadivStyle">
+                            <div class="ND_Img_Wrap">
+                                <p>No Data Found</p>
+                                @*<img src="~/ThemeStyles/images/NoDataImages/Users.svg" />*@
+                            </div>
+
+                        </div>
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+    <script src="~/assets/js/tagify.js"></script>
+    <script src="~/lib/BootboxJs/bootbox.min.js"></script>
+    <script src="~/lib/notify.js"></script>
+    <script src="~/lib/HoldOn.js-master/src/js/HoldOn.js"></script>
+    <script>
+        var IsMainJsExist = "";
+    </script>
+    @if (voiceboarding != true)
+    {
+        <script src="~/assets/onboarding/js/voice-onboarding.js"></script>
+    }
+    <script>
+        $(document).ready(function () {
+
+
+        });
+
+        var input = document.getElementById('Invites_Email');//document.querySelector('input[name=Invites.Email]');
+        // init Tagify script on the above inputs
+        console.log(input.value);
+        input.value = "";
+        tagify = new Tagify(input);
+
+
+
+
+        $(function () {
+
+            $(window).keydown(function (e) {
+                if (e.keyCode == 13) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+        });
+
+        $(".tagsremoveAllBtn").click(function () {
+            tagify.removeTag(Invites_Email);
+        });
+
+        $("#inviteUsers").on("click", function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var frm = $("#userInvites");
+            if (frm.valid()) {
+                if ($("#Invites_Email").val() != "") {
+                    $("#inviteUsers").prop("disabled", "disabled");
+                    $("#userInvites").submit();
+                }
+                else {
+                    $.notify("Input Field can not be null", "error");
+                }
+            }
+
+        });
+    </script>
+
+
+
+    <script src="~/lib/BootboxJs/bootbox.min.js"></script>
+    <script src="~/lib/notify.js"></script>
+    <script src="~/lib/HoldOn.js-master/src/js/HoldOn.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            var managerUserId;
+
+            $(document).on('change', '.checkisteammember', function () {
+                var control = $(this);
+                var isTeamMember = control.is(':checked');
+                var userId = control.attr('data-userId');
+
+                $.ajax({
+                    url: "/Admin/user/UpdateTeam",
+                    type: "GET",
+                    data: { isTeamMember: isTeamMember, userId: userId, managerUserId: managerUserId }
+                }).done(function (res) {
+                    if (res.removed) {
+                        $.notify(res.user + " " + "Removed from Team", "success");
+
+                    }
+                    else {
+                        $.notify(res.user + " " + "Added to Team", "success");
+                    }
+                });
+            });
+            $(document).on('click', '#addnewbtn', function (e) {
+                e.preventDefault();
+                managerUserId = $(this).attr("data-managerUserId");
+
+            });
+        });
+    </script>
+
+    <script>
+
+        //$(document).ready(function () {
+
+        var userName;
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+            $("#txtwelcome").html("Manage Users and Teams");
+        });
+
+        var managerUserId;
+
+        $("#CreateNewModal").on('hidden.bs.modal', function () {
+            location.reload();
+        });
+
+        $(document).on('change', '.checkisteammember', function () {
+            var control = $(this);
+            var isTeamMember = control.is(':checked');
+            var userId = control.attr('data-userId');
+
+            $.ajax({
+                url: "/Admin/user/UpdateTeam",
+                type: "GET",
+                data: { isTeamMember: isTeamMember, userId: userId, managerUserId: managerUserId }
+            }).done(function (res) {
+                if (res.removed) {
+                    $.notify(res.user + " " + "Removed from Team", "success");
+                }
+                else {
+                    $.notify(res.user + " " + "Added to Team", "success");
+                }
+            });
+        });
+
+
+        $(document).on('click', '#btnassignuser', function (e) {
+            debugger
+            e.preventDefault();
+            managerUserId = $(this).attr("data-managerUserId");
+            userName = $(this).attr('data-username');
+            var url = $(this).attr('href');
+            $.ajax({
+                url: url,
+                method: "GET",
+                beforeSend: function () {
+                    HoldOn.open({
+                        theme: "sk-cube-grid"
+                    });
+                }
+            }).done(function (res) {
+                HoldOn.close();
+                $("#CreateNewModal-label").html("Assign Users to <strong>" + userName + "</strong>");
+                $("#CreateNewBody").html(res);
+                $("#CreateNewModal").modal();
+            });
+        });
+
+        $(document).on('click', '#btnteamview', function (e) {
+            e.preventDefault();
+            managerUserId = $(this).attr("data-managerUserId");
+            userName = $(this).attr("data-username");
+            var url = $(this).attr('href');
+            $.ajax({
+                url: url,
+                method: "GET",
+                beforeSend: function () {
+                    HoldOn.open({
+                        theme: "sk-cube-grid"
+                    });
+                }
+            }).done(function (res) {
+                HoldOn.close();
+                $("#CreateNewModal-label").html("<strong>" + userName + "</strong>'s Team");
+                $("#CreateNewBody").html(res);
+                $("#CreateNewModal").modal();
+            });
+        });
+
+        $(document).on('click', '#btnAddToManager', function (e) {
+
+            e.preventDefault();
+
+            var url = $(this).attr('href');
+            bootbox.confirm({
+                message: "Are you Sure You Want To Add this user to Manager's Role",
+                closeButton: false, buttons: {
+                    confirm: { label: 'Yes', className: 'btn-info' },
+                    cancel: { label: 'No', className: 'btn-danger mr-2' }
+                },
+                callback: function (result) {
+                    if (result) {
+                        $.ajax({
+                            url: url,
+                            beforeSend: function () {
+                                HoldOn.open({
+                                    theme: "sk-cube-grid"
+                                });
+                            }
+                        }).done(function (result) {
+                            debugger
+                            HoldOn.close();
+                            if (result) {
+                                debugger
+                                $.notify("User Successfully added to Manager's Role", "success");
+                                location.reload();
+                            }
+                        });
+                    }
+                }
+            });
+        });
+
+        $(document).on('click', '#btnRemoveFromManager', function (e) {
+
+            e.preventDefault();
+            var url = $(this).attr('href');
+            bootbox.confirm({
+                message: "Are you Sure You Want To Remove this user from Manager's Role",
+                closeButton: false, buttons: {
+                    confirm: { label: 'Yes', className: 'btn-info' },
+                    cancel: { label: 'No', className: 'btn-danger mr-2' }
+                },
+                callback: function (result) {
+                    if (result) {
+                        $.ajax({
+                            url: url,
+                            beforeSend: function () {
+                                HoldOn.open({
+                                    theme: "sk-cube-grid"
+                                });
+                            }
+                        }).done(function (result) {
+                            HoldOn.close();
+                            if (result) {
+                                $.notify("User Successfully Removed from Manager's Role", "success");
+                                location.reload();
+                            }
+                        });
+                    }
+                }
+            });
+        });
+
+    </script>
+}

@@ -1,0 +1,49 @@
+body {
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 30px;
+}
+
+table {
+    border-collapse:separate; 
+    border-spacing: 0 1em;
+}
+
+button {
+    margin-right: 10px;
+    padding: 5px 10px;
+}
+
+input {
+    padding: 5px;
+}
+
+select {
+    padding: 5px;
+}
+
+textarea {
+    width: 700px;
+    height: 400px;
+}
+
+#speechActivity {
+    position: absolute;
+    width: 50px;
+    top: 280px;
+}
+
+#networkActivity {
+    position: absolute;
+    width: 40px;
+    top: 350px;
+    margin: 5px;
+}
+
+.hidden {
+    display: none;
+}
+.onboardingStyle {
+    border-color: #8c99e0 !important;
+    border-width: 1px;
+    border-style: solid;
+}

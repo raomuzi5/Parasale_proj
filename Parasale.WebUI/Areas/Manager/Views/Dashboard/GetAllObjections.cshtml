@@ -1,0 +1,240 @@
+﻿@model DashboardIndexViewModel
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@section Styles{
+    <style>
+      
+
+        .checkbox label {
+            position: absolute;
+        }
+    </style>
+}
+
+<div class="row clearfix">
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <div class="card">
+            <div class="header d-flex align-items-end justify-content-between">
+                <h2><strong>Objections</strong> List</h2>
+                <a id="createbtn" asp-area="Manager" asp-controller="Dashboard" data-toggle="modal" asp-action="AddObjection" class="btn btn-primary btn-sm">Add New</a>
+            </div>
+            <div class="body table-responsive">
+                <table class="table table-hover table-striped table-borderless">
+                    <thead>
+                        <tr>
+                            <th>Sr.</th>
+                            <th>Objections</th>
+                            <th>Responses</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Objections != null && Model.Objections.Count() > 0)
+                        {
+                            int index = 0;
+                            foreach (var objection in Model.Objections)
+                            {
+                                index++;
+                                <tr>
+                                    <td>@index</td>
+                                    <td>@objection.ObjectionName</td>
+                                    <td>@objection.ResponseKeyword</td>
+                                    <td>
+                                        @*<a id="btnpushobjectiontousers" data-toggle="tooltip" data-placement="top" title="Push Objection to Users" asp-area="Manager" asp-controller="User" asp-action="UsersList" asp-route-Id="@objection.Id" class="m-0 btn btn-info btn-xs"><span class="zmdi zmdi-mail-send"></span></a>*@
+                                        <a id="editbtn" data-toggle="tooltip" data-placement="top" title="Edit Objection" asp-area="Manager" asp-controller="Dashboard" asp-action="EditObjection" asp-route-id="@objection.Id" class="m-0 btn btn-info btn-xs"><span class="zmdi zmdi-edit"></span></a>
+                                        <a id="deletebtn" data-toggle="tooltip" data-placement="top" title="Delete Objection" asp-area="Manager" asp-controller="Dashboard" asp-action="DeleteObjection" asp-route-id="@objection.Id" class=" m-0 btn btn-danger btn-xs"><span class="zmdi zmdi-delete"></span></a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="4" align="center">No Record Found. Please click Add new button to add new objections.</td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts{
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+    <script src="~/lib/BootboxJs/bootbox.min.js"></script>
+    <script src="~/lib/notify.js"></script>
+    <script type="text/javascript">
+
+
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+
+            $("#txtwelcome").html("View Summary and Manage Objections List");
+        });
+
+
+        var objectionNotification = [];
+
+        $("#CreateNewModal").on('hidden.bs.modal', function () {
+            objectionNotification = [];
+        });
+
+        $(document).on('click', '#btnpushobjection', function (e) {
+            e.preventDefault();
+            if (objectionNotification.length > 0) {
+                var url = $(this).attr('href');
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: { models: objectionNotification }
+                }).done(function (res) {
+                    if (res) {
+                        $.notify("Objection Pushed to Selected User", "success");
+                        $('#CreateNewModal').modal('toggle');
+                    }
+                });
+            }
+            else {
+                $.notify("Please Select Atleast 1 User", "warn");
+            }
+
+        });
+
+        $(document).on('change', '.usertosendobjection', function () {
+            var control = $(this);
+            var isTeamMember = control.is(':checked');
+            var userId = control.attr('data-userId');
+            var objectionId = control.attr('data-objectionId');
+            var managerUserId = control.attr('data-managerUserId');
+            if (isTeamMember) {
+                objectionNotification.push({
+                    PushedByUserId: managerUserId,
+                    PushedToUserId: userId,
+                    ObjectionId: objectionId
+                });
+            }
+            else {
+                $.each(objectionNotification, function (i) {
+                    if (objectionNotification[i].PushedByUserId === managerUserId && objectionNotification[i].PushedToUserId === userId && objectionNotification[i].ObjectionId === objectionId) {
+                        objectionNotification.splice(i, 1);
+                        return false;
+                    }
+                });
+            }
+        });
+
+        $(document).on('click', '#btnpushobjectiontousers', function (e) {
+            e.preventDefault();
+            var url = $(this).attr('href');
+            $.ajax({
+                url: url,
+                method: "GET"
+            }).done(function (res) {
+                $("#CreateNewModal-label").html("Users List");
+                $("#CreateNewBody").html(res);
+                $("#CreateNewModal").modal();
+            });
+        });
+
+
+        $("#createbtn").click(function (e) {
+            e.preventDefault();
+            var url = $("#createbtn").attr('href');
+            $.ajax({
+                url: url,
+                method: "GET"
+            }).done(function (res) {
+                $("#CreateNewModal-label").html("Add New Objection");
+                $("#CreateNewBody").html(res);
+                $.validator.unobtrusive.parse("#CreateNewModal");
+                $("#CreateNewModal").modal();
+            });
+        });
+        $(document).on('click', '#editbtn', function (e) {
+            e.preventDefault();
+            var url = $(this).attr('href');
+            $.ajax({
+                url: url,
+                method: "GET"
+            }).done(function (res) {
+                $("#CreateNewModal-label").html("Edit Objection");
+                $("#CreateNewBody").html(res);
+                $.validator.unobtrusive.parse("#CreateNewModal");
+                $("#CreateNewModal").modal();
+            });
+        });
+
+           $(document).on('click', '#viewbtn', function (e) {
+            e.preventDefault();
+               var url = $(this).attr('href');
+               $.ajax({
+                   url: url,
+                   method: "GET"
+            }).done(function (res) {
+                $("#CreateNewModal-label").html("");
+                $("#CreateNewBody").html(res);
+                $.validator.unobtrusive.parse("#CreateNewModal");
+                $("#CreateNewModal").modal();
+            });
+        });
+        $(document).on('click', '#deletebtn', function (e) {
+            e.preventDefault();
+            var url = $(this).attr('href');
+            bootbox.confirm({
+                message: "Are you Sure You Want To Delete this Record?",
+                closeButton: false, buttons: {
+                    confirm: { label: 'Yes', className: 'btn-info' },
+                    cancel: { label: 'No', className: 'btn-danger' }
+                },
+                callback: function (result) {
+                    if (result) {
+                        $.ajax({ url: url }).done(function (result) {
+                            if (result) {
+                                //$.notify("Data Deleted Successfully", "success");
+                                //sleep(4000);
+                                bootbox.alert({
+                                    message: "Record Deleted Successfully!",
+                                    callback: function () { location.reload(); }
+                                });
+                            }
+                        });
+                    }
+                }
+            });
+        });
+
+        $(document).on('click', '#btnPushMissedObjectionsToUser', function (e) {
+            e.preventDefault();
+            var control = $(this);
+            var url = control.attr('href');
+            var username = control.attr('data-username');
+            $.ajax({
+                url: url,
+                type: "GET",
+                data: { username: username }
+            }).done(function (res) {
+                if (res) {
+                    $.notify("User notified successfully", "success");
+                    location.reload();
+                }
+            });
+        });
+
+        $(function () {
+            var model = $("#checkModel").attr('data-checkmodel');
+            if (model === "0") {
+                $("#usersmissedobjectionsdiv").hide();
+            }
+        });
+
+
+    </script>
+}

@@ -1,0 +1,46 @@
+﻿@model ObjectionListViewModel
+
+@{
+
+}
+
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Sr.</th>
+                <th>Objection</th>
+                @if (!Model.isCompleted && !Model.isFromAdmin)
+                {
+                    <th>Expected Response</th>
+                }
+                <th>Time</th>
+            </tr>
+        </thead>
+        <tbody id="ctm-objectiontblbody">
+            @if (Model.Objections != null && Model.Objections.Count() > 0)
+            {
+                int index = 0;
+                foreach (var item in Model.Objections)
+                {
+                    index++;
+                    <tr>
+                        <td>@index.</td>
+                        <td><label data-container="body" data-toggle="popover" data-trigger="hover" data-content="@item.ObjectionName">@item.ObjectionName</label></td>
+                        @if (!Model.isCompleted && !Model.isFromAdmin)
+                        {
+                            <td>@item.ResponseKeyword</td>
+                        }
+                        <td class="momentTime">@item.ObjectionTime.ToString("yyyyMMddHHmmss")</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="4" align="center">No Record Found.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,123 @@
+﻿@model IEnumerable<Parasale.Models.QuickCollection>
+
+@{
+    ViewData["Title"] = "Quick Start";
+    var voiceboarding = ViewBag.voiceboarding;
+}
+<div class="row clearfix">
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <div class="card">
+            <div class="header d-flex justify-content-between align-items-center pb-0">
+                <h2><strong>Quick Start</strong> Collections</h2>
+            </div>
+            <button id="autoplay" class="d-none">play</button>
+            <div class="body table-responsive">
+                @if (Model != null && Model != null && Model.Count() > 0)
+                {
+                    <table class="table table-hover table-striped table-borderless">
+                        <thead>
+                            <tr>
+                                <th>Sr.</th>
+                                <th>Collections</th>
+
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model != null && Model.Count() > 0)
+                            {
+                                int index = 0;
+                                foreach (var collection in Model.OrderByDescending(o => o.QuickStart))
+                                {
+                                    index++;
+                                    <tr>
+                                        <td>@index</td>
+                                        <td>@collection.CollectionName</td>
+
+                                        <td>
+                                            <a id="addCollection" data-toggle="tooltip" data-placement="top" title="Move to My Collections" asp-area="Manager" asp-controller="Dashboard" asp-action="MoveToMyCollections" asp-route-id="@collection.Id" class="m-0 btn btn-info btn-xs addCollections"><span class="zmdi zmdi-arrow-right addCollections"></span></a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+
+
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <div class="col-md-12 text-center nodatadivStyle">
+                        <div class="ND_Img_Wrap">
+                            <p>There is no quick collection</p>
+                            @*<img src="~/ThemeStyles/images/NoDataImages/Quick start.svg" />*@
+                        </div>
+
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        var IsMainJsExist = "";
+    </script>
+    @if (voiceboarding != true)
+    {
+        <script src="~/assets/onboarding/js/voice-onboarding.js"></script>
+    }
+    <script>
+        //             $(document).ready(function () {
+        //           var btnHtml = '';
+        //     btnHtml += '<button id="ppVoice" class="ppVoice btn btn-danger">Pause</button>';
+        //    btnHtml += '<button id="skip" class="skip btn btn-light">Save For Later</button>';
+        //            $('.ttour-footer').prepend(btnHtml);
+        //            $(".ppVoice").on("click", function () {
+
+        //                if ($(this).text() === "Play") {
+        //                    $(this).text("Pause");
+        //                    synth.resume();
+        //                }
+        //                else {
+        //                    $(this).text("Play");
+        //                    synth.pause();
+        //                }
+        //            });
+        //                $(".skip").on("click", function () {
+        //    var Urlpath = window.location.href;
+        //    $.ajax({
+
+        //        url: '/Speech/SaveLater/',
+        //        data: { Urlpath:Urlpath, currentStep: currentStep },
+        //        success: function (res) {
+        //            $.notify("Successfully saved for later", 'success');
+        //        }
+        //    });
+        //});
+
+        //        });
+
+        $(document).on("click", ".addCollections", function (e) {
+            e.preventDefault();
+            var id = $(this).attr('data-id');
+            $.ajax({
+                url: '/Manager/Dashboard/MoveToMyCollections/',
+                data: { id: id },
+                success: function (res) {
+
+                    $.ajax({
+                        url: '/Manager/Dashboard/ManagerCollections/',
+                        data: { after: "after" },
+                        success: function (response) {
+
+                            $("#colPage").empty().html(response);
+
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}

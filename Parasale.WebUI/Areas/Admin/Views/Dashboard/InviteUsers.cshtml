@@ -1,0 +1,151 @@
+﻿@model InvitesViewModel;
+
+@{
+    ViewData["Title"] = "Invite Users";
+    var voiceboarding = Model.voiceboarding;
+}
+<link href="~/assets/css/tagify.css" rel="stylesheet" />
+<div class="row clearfix">
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <div class="card">
+            <button id="autoplay" class="d-none">play</button>
+            <div class="header clearfix pb-0">
+                <h2 class="float-left"><strong>User</strong> Email</h2>
+            </div>
+            <div class="body">
+                <div class="row ">
+                    <div class="col-md-5 userInvites">
+                        <form asp-action="InviteUsers" id="userInvites">
+
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <div class="form-group">
+                                <label asp-for="Invites.Email" class="control-label"></label>
+                                <input asp-for="Invites.Email" class="form-control py-1" />
+                                <span id="error" class="text-danger d-none">This is required field.</span>
+                            </div>
+
+                        </form>
+                        @if (Model != null && Model.success == true)
+                        {
+                            <div class="alert alert-info">Invitation(s) sent <strong>Successfully</strong></div>
+                        }
+                    </div>
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <label class="w-100">&nbsp;</label>
+                            <button type="button" class="btn btn-primary m-0" id="inviteUsers">Invite</button>
+                            <button type="button" class="btn btn-primary m-0 d-none tagsremoveAllBtn" id="">Remove Tags</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@await Component.InvokeAsync("InviteUserList")
+
+
+@section Scripts{
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+    <script src="~/assets/js/tagify.js"></script>
+    <script>
+        var IsMainJsExist = "";
+    </script>
+    @if (voiceboarding != true)
+    {
+        <script src="~/assets/onboarding/js/voice-onboarding.js"></script>
+    }
+    <script>
+         $(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+    $("#txtwelcome").html("");
+    });
+        $(document).ready(function () {
+            //var btnHtml = '';
+            //btnHtml += '<button id="ppVoice" class="ppVoice btn btn-danger">Pause</button>';
+            //btnHtml += '<button id="skip" class="skip btn btn-light">Save For Later</button>';
+            //$('.ttour-footer').prepend(btnHtml);
+            //$(".skip").on("click", function () {
+            //    var Urlpath = window.location.href;
+            //    $.ajax({
+
+            //        url: '/Speech/SaveLater/',
+            //        data: { Urlpath: Urlpath, currentStep: currentStep },
+            //        success: function (res) {
+            //            $.notify("Successfully saved for later", 'success');
+            //        }
+            //    });
+            //});
+            //$(".ppVoice").on("click", function () {
+
+            //    if ($(this).text() === "Play") {
+            //        $(this).text("Pause");
+            //        synth.resume();
+            //    }
+            //    else {
+            //        $(this).text("Play");
+            //        synth.pause();
+            //    }
+            //});
+
+        });
+
+        var input = document.getElementById('Invites_Email');//document.querySelector('input[name=Invites.Email]');
+        // init Tagify script on the above inputs
+        console.log(input.value);
+        input.value = "";
+        tagify = new Tagify(input);
+
+
+        //function init() {
+        //    // "remove all tags" button event listener
+        //    document.querySelector('.tagsremoveAllBtn')
+        //        .addEventListener('click', tagify.removeAllTags.bind(tagify))
+
+        //    tagify.on('remove', onRemoveTag)
+        //    function onRemoveTag(e) {
+        //        console.log(e.detail);
+        //        console.log("tagify instance value:", tagify.value)
+        //    }
+
+        //}
+
+
+        $(function () {
+
+            $(window).keydown(function (e) {
+                if (e.keyCode == 13) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+        });
+
+        $(".tagsremoveAllBtn").click(function () {
+            tagify.removeTag(Invites_Email);
+        });
+
+        $("#inviteUsers").on("click", function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var frm = $("#userInvites");
+            if (frm.valid()) {
+                if ($("#Invites_Email").val() != "") {
+                    $("#inviteUsers").prop("disabled", "disabled");
+                    $("#userInvites").submit();
+                }
+                else {
+                    $.notify("Input Field can not be null", "error");
+                }
+            }
+            //$(".tagsremoveAllBtn").click();
+            //$("#Invites_Email").val('');
+            //$("#userInvites").trigger('reset');
+            //tagify.removeTag
+        });
+    </script>
+}
+

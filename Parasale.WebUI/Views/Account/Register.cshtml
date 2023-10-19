@@ -1,0 +1,233 @@
+﻿@model Parasale.WebUI.Models.RegisterViewModel
+
+@{
+    ViewData["Title"] = "Register";
+}
+<style>
+    .validation-summary-errors ul {
+        padding: 0;
+        list-style: none;
+    }
+
+    .u-mb-20 {
+        margin-bottom: 0rem !important;
+        margin-top: 1.25rem !important;
+    }
+
+    .d-flex {
+        margin-top: 26px;
+    }
+
+    .ctm-form {
+        margin-top: -20px;
+    }
+
+    .header {
+        display: none;
+    }
+    /*.field-validation-error {
+        margin-left: -26px;
+    }*/
+</style>
+
+<section data-dark-overlay="5" class="u-py-100 u-h-100vh u-flex-center py-0" style="background:url(/assets/img/login/coming-soon-bg.jpg) no-repeat; background-size:cover; background-position: top center;">
+    <div class="container">
+        <!--Establish Register Header--Green-->
+        <div class="row">
+            <div class="col-lg-6 m-auto text-center">
+                <div class="card box-shadow-v2 bg-white u-of-hidden">
+                    <h2 class="bg-green m-0 py-3 text-white">REGISTER</h2>
+                    <div class="p-4 p-md-5">
+
+                        <form asp-area="" asp-controller="Account" asp-action="Register" method="post" class="ctm-form">
+                            <!--Establish Person Icon Green-->
+                            <div class="input-group u-rounded-50 border u-of-hidden u-mb-20">
+                                <div class="input-group-addon bg-white border-0 pl-4 pr-0">
+                                    <span class="icon icon-User text-green"></span>
+                                </div>
+                                <input asp-for="Name" type="text" class="form-control border-0 p-3" placeholder="Your Full Name">
+                            </div>
+                            <span asp-validation-for="Name" class="text-danger small"></span>
+                            @Html.HiddenFor(model => model.adminId)
+                            @Html.HiddenFor(model => model.managerID)
+                            @Html.HiddenFor(model => model.token)
+                            @Html.HiddenFor(model => model.YesNo)
+                            @*@Html.HiddenFor(model => model.IsAdmin)*@
+                            <!--Establish Mail Icon Green-->
+
+                            <div class="input-group u-rounded-50 border u-of-hidden u-mb-20">
+                                <div class="input-group-addon bg-white border-0 pl-4 pr-0">
+                                    <span class="icon icon-Mail text-green"></span>
+                                </div>
+                                @if (Model.IsEmailExist)
+                                {
+                                    <input asp-for="EmailAddress" value="@Model.EmailAddress" readonly type="text" class="form-control border-0 p-3">
+                                }
+                                else
+                                {
+                                    <input asp-for="EmailAddress" type="text" class="form-control border-0 p-3" placeholder="Your email">
+                                }
+                            </div>
+                            <span asp-validation-for="EmailAddress" class="text-danger small"></span>
+                            <div class="d-none" id="checkEmail">
+                                <span id="Isemail"></span>
+                                <br />
+                                <button class="btn btn-sm success" style="color: white; background-color: #4CAF50;" id="Yes">Yes</button>
+                                <button class="btn btn-sm danger" style="color: white; background-color: #f44336;" id="No">No</button>
+                                <br />
+                                <span class="alert" style="color:#f44336">
+                                    Please! select one to proceed.
+                                </span>
+                            </div>
+
+                            <div class="input-group u-rounded-50 border u-of-hidden u-mb-20">
+                                <div class="input-group-addon bg-white border-0 pl-4 pr-0">
+                                    <span class="icon icon-User text-green"></span>
+                                </div>
+                                <input asp-for="Username" type="text" class="form-control border-0 p-3" placeholder="Username">
+                            </div>
+                            <span asp-validation-for="Username" class="text-danger small"></span>
+
+                            <!--Establish Password Icon Green -->
+                            <div class="input-group u-rounded-50 border u-of-hidden u-mb-20">
+                                <div class="input-group-addon bg-white border-0 pl-4 pr-0">
+                                    <span class="icon icon-ClosedLock  text-green"></span>
+                                </div>
+                                <input asp-for="Password" type="password" class="form-control border-0 p-3" placeholder="Password">
+                            </div>
+                            <span asp-validation-for="Password" class="text-danger small"></span>
+
+                            @*<div class="clearfix" style="margin-top: 20px;">
+            <label class="custom-control custom-checkbox float-left">
+                <input asp-for="IsCompany" type="checkbox" class="custom-control-input accountType">
+                <span class="custom-control-indicator mt-1"></span>
+                <span class="custom-control-description">Company Account</span>
+            </label>
+            <label class="custom-control custom-checkbox float-right mr-0">
+                <input id="individual"  type="checkbox" class="custom-control-input accountType">
+                <span class="custom-control-indicator mt-1"></span>
+                <span class="custom-control-description">Individual Account</span>
+            </label>
+        </div>*@
+
+                            <!--Establish Terms and Conditions Green-->
+                            <div class="text-left" style="margin-top: 20px;">
+                                <label class="custom-control custom-checkbox text-left">
+                                    <input asp-for="IsTermsConditionAccepted" type="checkbox" class="custom-control-input" required>
+                                    <span class="custom-control-indicator mt-1"></span>
+                                    <span class="custom-control-description">I agree to the <a class="text-green" asp-area="" asp-controller="Home" asp-action="TermsCondition">terms</a> and conditions.</span>
+                                </label>
+
+                            </div>
+                            <div>
+                                <span asp-validation-for="IsTermsConditionAccepted" class="text-danger small"></span>
+                            </div>
+                            <div asp-validation-summary="ModelOnly" class="text-danger ctmValidation"></div>
+
+                            <!--Establish Register Now Green-->
+                            <button type="submit" class="btn btn-green btn-rounded u-mt-20 u-w-170" id="btnRegister">
+                                Register Now
+                            </button>
+                        </form>
+
+                        <!--Establish Social Media button-->
+                        @*<ul class="list-inline u-my-40">
+                                <li class="mb-3">Or Sign In with</li>
+                                <li class="list-inline-item">
+                                    <a href="" class="fa fa-facebook u-w-45 u-h-45 u-flex-center text-white rounded-circle bg-facebook"></a>
+                                </li>
+                                <li class="list-inline-item">
+                                    <a href="" class="fa fa-twitter u-w-45 u-h-45 u-flex-center text-white rounded-circle bg-twitter"></a>
+                                </li>
+                                <li class="list-inline-item">
+                                    <a href="" class="fa fa-google-plus u-w-45 u-h-45 u-flex-center text-white rounded-circle bg-google"></a>
+                                </li>
+                            </ul>*@
+                        <br />
+                        <!--Establish already have an account-->
+                        <p class="m-0">
+                            Already have an account? <a asp-area="" asp-controller="Account" asp-action="Login" class="text-green">Sign In</a>
+                        </p>
+                    </div> <!-- END p-4 p-md-5-->
+                </div>  <!-- END card-->
+            </div> <!-- END col-lg-5-->
+        </div>
+        <!-- END row-->
+    </div> <!-- END container-->
+
+</section> <!-- END intro-hero-->
+
+@section Scripts{
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="~/lib/notify.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+
+    <script>
+        $(".accountType").on('change', function () {
+            if ($("#IsCompany").prop("checked") == true) {
+                $("#individual").prop("checked", false);
+            }
+            if ($("#individual").prop("checked") == true) {
+                $("#IsCompany").prop("checked", false);
+            }
+
+
+        });
+        $("#EmailAddress").on("focusout", function () {
+            if (!$(this).prop("readonly")) {
+                var EmailAddress = $(this).val();
+
+                $.ajax({
+                    url: '/Account/CheckInvitedEmail',
+                    data: { EmailAddress: EmailAddress },
+                    success: function (response) {
+                        if (response.success) {
+
+                            $("#checkEmail").removeClass("d-none");
+                            $("#Isemail").html('You are invited by <u>' + response.name + '</u>.<br> Would you like to sign up under the mentioned user?');
+                            $("#token").val(response.token);
+                            $("#btnRegister").prop("disabled", true);
+                        }
+                        else {
+                            $("#YesNo").val("No");
+
+                        }
+                    }
+                });
+            }
+        });
+        $("#Yes").on("click", function () {
+            $("#checkEmail").addClass("d-none");
+            $("#YesNo").val("Yes");
+            $("#btnRegister").prop("disabled", false);
+        });
+        $("#No").on("click", function () {
+            $("#checkEmail").addClass("d-none");
+            $("#YesNo").val("No");
+            $("#btnRegister").prop("disabled", false);
+        });
+
+        //$(document).on('submit', '.ctm-form', function (e) {
+        //    debugger
+        //    e.preventDefault();
+            
+        //    var frm = $(this);
+        //    if (frm.valid()) {
+        //        debugger
+
+        //        $.ajax({
+        //            type: "POST",
+        //            url: '/Account/Register',
+        //            data: frm.serialize(),
+                    
+        //            success: function (response) {
+        //                debugger
+        //                window.location.href = '/Account/Login';
+        //            },
+        //        });
+        //    }
+
+        //});
+    </script>
+}

@@ -1,0 +1,39 @@
+﻿@model IEnumerable<CollectionListViewModel>
+
+
+<div class="body table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Sr.</th>
+                <th>Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Count() > 0)
+            {
+                int index = 0;
+                foreach (var collection in Model)
+                {
+                    index++;
+            <tr>
+                <td>@index</td>
+                <td>@collection.CollectionName</td>
+                <td>
+                    <a id="editbtn" data-toggle="tooltip" data-placement="top" title="Edit Collection" asp-area="Manager" asp-controller="Collection" asp-action="Edit" asp-route-id="@collection.Id" class="m-0 btn btn-default btn-xs"><span class="zmdi zmdi-edit"></span></a>
+                    <a id="deletebtn" data-toggle="tooltip" data-placement="top" title="Delete Collection" asp-area="Manager" asp-controller="Collection" asp-action="Delete" asp-route-id="@collection.Id" class=" m-0 btn btn-danger btn-xs"><span class="zmdi zmdi-delete"></span></a>
+                </td>
+            </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="4" align="center">No Record Found..</td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+</div>

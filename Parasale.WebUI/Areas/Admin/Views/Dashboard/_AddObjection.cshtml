@@ -1,0 +1,31 @@
+﻿@*@model Parasale.WebUI.Areas.Admin.Models.ObjectionViewModel*@
+@model ObjectionAddViewModel
+<div class="row">
+    <div class="col-md-12">
+        <form asp-action="AddObjection" id="frmAdAddObjection">
+
+            <div class="form-group">
+                <label asp-for="ObjectionName" class="control-label"></label>
+                <input asp-for="ObjectionName" required class="form-control" placeholder="Objection Name" />
+                <span asp-validation-for="ObjectionName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ResponseKeyword" class="control-label"></label>
+                <input asp-for="ResponseKeyword" class="form-control" required placeholder="For Multiple keywords, Seperate keywords by ','" />
+                <span asp-validation-for="ResponseKeyword" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="collectionId" class="control-label"></label>
+                @Html.DropDownListFor(model => model.collectionId, Model.collections, "Select Collection", new { @class = "form-control" })
+                <span asp-validation-for="collectionId" class="text-danger"></span>
+
+            </div>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group text-right">
+
+                <input type="button" data-dismiss="modal" value="Cancel" class="btn btn-danger" />
+                <input type="button" value="Save" id="btnAddAdObjections" class="btn btn-info" />
+            </div>
+        </form>
+    </div>
+</div>

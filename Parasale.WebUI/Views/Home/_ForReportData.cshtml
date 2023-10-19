@@ -1,0 +1,53 @@
+﻿@model IEnumerable<ReportDataViewModel>
+
+<div class=" table-responsive">
+    <table class="table table-striped table-borderless table-hover mb-0" id="CollectionTable">
+        <thead>
+            <tr>
+                <th>
+                    
+                    
+                    <div class="checkbox ctmCheckbox mr-5">
+                        <input id="checkAll" class="" type="checkbox"/>
+                        <label for="checkAll">Select All</label>
+                    </div>
+                </th>
+                <th>Name</th>
+
+            </tr>
+        </thead>
+        <tbody>
+        
+                @if (Model != null && Model.Count() > 0)
+                {
+                    int index = 0;
+                    foreach (var collection in Model)
+                    {
+                        index++;
+                        <tr>
+                            <td>
+                                <div class="checkbox ctmCheckbox mr-2">
+                                    <input id="@collection.Ids"  class="checkisteammember generateReport" type="checkbox" data-userId="@collection.Ids">
+                                    <label for="@collection.Ids"></label>
+                                </div>
+                               
+                            </td>
+                            <td>@collection.Names</td>
+
+                        </tr>
+                    }
+                    
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="2" align="center">No Record Found..</td>
+                    </tr>
+                }
+            
+        </tbody>
+    </table>
+    <div class="text-right">
+        <button id="btnCollectionGenerateReport" class="btn btn-primary">Get Report</button>
+    </div>
+</div>

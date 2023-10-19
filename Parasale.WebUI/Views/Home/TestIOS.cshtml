@@ -1,0 +1,89 @@
+﻿@{
+    ViewData["Title"] = "IOS";
+    Layout = "~/Views/Shared/_Layout1.cshtml";
+}
+<div class="row">
+    Language :<br />
+    <input type="text" id="lang" value="hi-IN">
+    <br />
+    Sample Text:<br />
+    <input type="text" id="sampletext" size="60" value="Hello Akash Pankaj How are you">
+    <br />
+    Rate 0-10 :<br />
+    <input type="text" id="rate" value="0.7">
+    <br />
+    Pitch 0-2 :<br />
+    <input type="text" id="pitch" value="1">
+    <br />
+    Volume 0-1 :<br />
+    <input type="text" id="volume" value="1">
+    <br /><br />
+    <input type="Button" value="Click Me!" onclick="myFunction()">
+    <br /><br />
+    <!--<div id="details" style="display:block;">Language List</div>-->
+    <textarea id="details" rows="12" cols="50" style="display:block;">Language List</textarea>
+
+</div>
+
+<script type="text/javascript">
+    //const synth = window.speechSynthesis;
+    //function myFunction() {
+
+    //    dtlarea = document.getElementById("details");
+    //    //dtlarea.style.display="none";
+    //    dtltxt = "";
+    //    var mytimer = setInterval(function () {
+
+    //        var voices = speechSynthesis.getVoices();
+    //        //console.log(voices);
+    //        if (voices.length !== 0) {
+
+    //            var msg = new SpeechSynthesisUtterance();
+
+    //            msg.rate = document.getElementById("rate").value; // 0.1 to 10
+    //            msg.pitch = document.getElementById("pitch").value; //0 to 2
+    //            msg.volume = document.getElementById("volume").value; // 0 to 1
+
+    //            msg.text = document.getElementById("sampletext").value;
+    //            msg.lang = document.getElementById("lang").value; //'hi-IN';
+
+    //            for (var i = 0; i < voices.length; i++) {
+
+    //                dtltxt += voices[i].lang + ' ' + voices[i].name + '\n';
+
+    //                if (voices[i].lang == msg.lang) {
+    //                    msg.voice = voices[i]; // Note: some voices don't support altering params
+    //                    msg.voiceURI = voices[i].voiceURI;
+    //                    // break;
+    //                }
+    //            }
+
+    //            msg.onend = function (e) {
+    //                console.log('Finished in ' + event.elapsedTime + ' seconds.');
+    //                dtlarea.value = dtltxt;
+    //            };
+
+    //            speechSynthesis.speak(msg);
+
+    //            clearInterval(mytimer);
+
+    //        }
+    //    }, 1000);
+
+    //}
+
+    //$(document).ready(function () {
+        var voices = window.speechSynthesis.getVoices(); alert(voices);
+        const awaitVoices = new Promise(done => speechSynthesis.onvoiceschanged = done);
+    
+        function listVoices() {
+            
+            awaitVoices.then(() => {
+                let voices = speechSynthesis.getVoices();
+                alert(voices);
+            });
+        }
+    //});
+</script>
+
+

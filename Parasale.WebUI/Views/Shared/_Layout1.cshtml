@@ -1,0 +1,202 @@
+﻿
+<!doctype html>
+<html class="no-js " lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <meta name="description" content="Responsive Bootstrap 4 and web Application ui kit.">
+    <title>@ViewData["Title"] :: Parasale</title>
+    <link rel="icon" href="~/favicon.png" type="image/x-icon"> <!-- Favicon-->
+    <link rel="stylesheet" href="~/ThemeStyles/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.11/css/bootstrap-select.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.css" />
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css">
+    <link rel="stylesheet" href="~/ThemeStyles/Datatable/jquery-datatable/dataTables.bootstrap4.min.css" />
+    @*<link rel="stylesheet" href="~/ThemeStyles/css/jquery-jvectormap-2.0.3.min.css" />
+        <link rel="stylesheet" href="~/ThemeStyles/css/morris.min.css" />*@
+    <!-- Custom Css -->
+    <link rel="stylesheet" href="~/ThemeStyles/css/main.css">
+    <link rel="stylesheet" href="~/ThemeStyles/css/color_skins.css">
+    <link href="~/ThemeStyles/css/custome.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/ThemeStyles/bootstrapDateTime/bootstrap-datetimepicker.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.min.css" />
+
+    @RenderSection("Styles", required: false)
+</head>
+<body class="theme-purple">
+    <!-- Page Loader -->
+    <div class="page-loader-wrapper">
+        <div class="loader">
+            <p>Please wait...</p>
+        </div>
+    </div>
+    <!-- Overlay For Sidebars -->
+    <div class="overlay"></div>
+
+    <!-- Top Bar -->
+    <nav class="navbar p-l-5 p-r-5">
+        <ul class="nav navbar-nav navbar-left">
+            <li>
+                <div class="navbar-header">
+                    <a href="javascript:void(0);" class="bars"></a>
+                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                        <span class="m-l-10">
+                            <img src="~/assets/img/parasale.png" height="28px" /> Parasale
+                        </span>
+                    </a>
+                </div>
+            </li>
+            <li><a href="javascript:void(0);" class="ls-toggle-btn" data-close="true"><i class="zmdi zmdi-swap"></i></a></li>
+
+
+            @*<li class="hidden-sm-down">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search...">
+                        <span class="input-group-addon"><i class="zmdi zmdi-search"></i></span>
+                    </div>
+                </li>*@
+            @*<li class="float-right">
+                    <a asp-area="" asp-controller="Home" asp-action="Index" class="mega-menu" data-close="true">@User.Identity.Name</a>
+                    <a asp-area="" asp-controller="Account" asp-action="Logout" title="Logout" class="mega-menu" data-close="true"><i class="zmdi zmdi-power"></i></a>
+                </li>*@
+
+
+            <li class="float-right">
+                @*<a asp-area="Admin" asp-controller="Account" asp-action="ChangePassword" class="mega-menu" data-close="true">@User.Identity.Name.ToUpper()</a>*@
+                <a asp-area="" asp-controller="Account" asp-action="Logout" title="Logout" class="mega-menu" data-close="true"><i class="zmdi zmdi-power"></i></a>
+            </li>
+            <li class="dropdown float-right">
+                <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button">
+                    @*<i class="zmdi zmdi-notifications"></i>
+                        <div class="notify"><span class="heartbit"></span><span class="point"></span></div>*@
+                    @(User.Identity.Name.Substring(0, 1).ToUpper() + User.Identity.Name.Substring(1).ToLower()) <i class="zmdi zmdi-caret-down"></i>
+                </a>
+                <ul class="dropdown-menu pullDown" style="left: -165px; width: 230px;">
+                    <li>
+                        <a class="dropdown-item" asp-area="" asp-controller="Home" asp-action="Index">
+                            Home
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="ChangePassword">
+                            Change Password
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+
+
+        </ul>
+    </nav>
+    <div class="modal" id="CreateNewModal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h5 class="modal-title m-0" id="CreateNewModal-label"></h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <div id="CreateNewBody" class="modal-body">
+
+                </div>
+
+                <!-- Modal footer -->
+                @*<div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    </div>*@
+
+            </div>
+        </div>
+    </div>
+    <!-- Main Content -->
+    <section class="content home">
+        <div class="block-header">
+            <div class="row">
+                <div class="col-lg-5 col-md-5 col-sm-12">
+                    <h2>
+                        Welcome to Parasale
+                    </h2>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            @RenderBody()
+        </div>
+    </section>
+    <!-- Jquery Core Js -->
+    <!--<script src="~/ThemeStyles/js/libscripts.bundle.js"></script> <!-- Lib Scripts Plugin Js ( jquery.v3.2.1, Bootstrap4 js) -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="~/ThemeStyles/js/vendorscripts.bundle.js"></script> <!-- slimscroll, waves Scripts Plugin Js -->
+    @*<script src="~/ThemeStyles/js/morrisscripts.bundle.js"></script><!-- Morris Plugin Js -->
+        <script src="~/ThemeStyles/js/jvectormap.bundle.js"></script> <!-- JVectorMap Plugin Js -->
+        <script src="~/ThemeStyles/js/knob.bundle.js"></script> <!-- Jquery Knob, Count To, Sparkline Js -->*@
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="~/ThemeStyles/Datatable/datatablescripts.bundle.js"></script>
+    <script src="~/ThemeStyles/Datatable/jquery-datatable.js"></script>
+    <script src="~/ThemeStyles/js/mainscripts.bundle.js"></script>
+    <script src="~/ThemeStyles/js/index.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+
+    <script>
+        var url;
+        var istrue;
+        $(document).ready(function () {
+            url = window.location.href;
+            istrue = url.includes("parasale.co");
+            //$(".ls-toggle-btn").click();
+            //$(".ls-toggle-btn").css('visibility', 'hidden');
+            $(document).on('click', ".mylinks", function (e) {
+                e.preventDefault();
+                var $this = $(this);
+                var url = $this.attr('href');
+
+                $.ajax({
+                    url: url,
+                    method: "GET"
+                }).done(function (res) {
+                    $("#CreateNewModal-label").html($this.attr('title'));
+                    $("#CreateNewBody").html(res);
+                    $.validator.unobtrusive.parse("#CreateNewModal");
+                    $("#CreateNewModal").modal();
+                });
+            });
+        });
+        //    <!-- Hotjar Tracking Code for www.parasale.co -->
+        if (istrue) {
+            (function (h, o, t, j, a, r) {
+                h.hj = h.hj || function () { (h.hj.q = h.hj.q || []).push(arguments) };
+                h._hjSettings = { hjid: 1595804, hjsv: 6 };
+                a = o.getElementsByTagName('head')[0];
+                r = o.createElement('script'); r.async = 1;
+                r.src = t + h._hjSettings.hjid + j + h._hjSettings.hjsv;
+                a.appendChild(r);
+            })(window, document, 'https://static.hotjar.com/c/hotjar-', '.js?sv=');
+        }
+    </script>
+    @RenderSection("Scripts", required: false);
+    <script>
+        $(document).ready(function () {
+            $(".ls-toggle-btn").click();
+            $(".ls-toggle-btn").css('visibility', 'hidden');
+        })
+    </script>
+    <script>
+        $(".Para-icon-hover i").hover(function () {
+
+            $('body').addClass('Para-popover-width')
+        }, function () {
+            $('body').removeClass('Para-popover-width')
+        });
+    </script>
+</body>
+</html>
+
+

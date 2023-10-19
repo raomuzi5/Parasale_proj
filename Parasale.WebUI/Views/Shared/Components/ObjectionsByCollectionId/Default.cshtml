@@ -1,0 +1,51 @@
+﻿@model ObjectionVM
+
+<div class="row clearfix">
+    <div class="col-md-12 text-right pb-3">
+        <a id="createbtn1" asp-area="" asp-controller="Gigantic" data-toggle="modal" asp-action="AddQuickObjection" asp-route-id="@Model.id" class="btn btn-primary btn-sm float-right">Add New</a>
+    </div>
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <div class="table-responsive">
+            <table class="table table-hover table-striped table-borderless">
+                <thead>
+                    <tr>
+                        <th>Sr.</th>
+                        <th>Objections</th>
+                        <th>Responses</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Obj != null && Model.Obj.Count() > 0)
+                    {
+                        int index = 0;
+                        var objections = Model.Obj;
+
+                        foreach (var objection in objections)
+                        {
+                            index++;
+                            <tr>
+                                <td>@index</td>
+                                <td>@objection.ObjectionName</td>
+                                <td>@objection.ResponseKeyword</td>
+                                <td>
+                                    @*<a id="btnpushobjectiontousers" data-toggle="tooltip" data-placement="top" title="Push Objection to Users" asp-area="Manager" asp-controller="User" asp-action="UsersList" asp-route-Id="@objection.Id" class="m-0 btn btn-info btn-xs"><span class="zmdi zmdi-mail-send"></span></a>*@
+                                    <a id="editObjbtn" data-toggle="tooltip" data-placement="top" title="Edit Objection" asp-area="" asp-controller="Gigantic" asp-action="EditQuickObjection" asp-route-id="@objection.Id" class="m-0 btn btn-info btn-xs mylinks"><span class="zmdi zmdi-edit"></span></a>
+                                    <a id="GigdeleteObjbtn" data-toggle="tooltip" data-placement="top" title="Delete Objection" asp-area="" asp-controller="Gigantic" asp-action="DeleteQuickObjection" asp-route-id="@objection.Id" class=" m-0 btn btn-danger btn-xs"><span class="zmdi zmdi-delete"></span></a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4" align="center">No Record Found. Please click Add new button to add new objections.</td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        </div>
+       
+    </div>
+</div>

@@ -1,0 +1,36 @@
+﻿@model IEnumerable<UserListViewModel>
+
+
+<div class="body table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Username</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Count() > 0)
+            {
+                int index = 0;
+                foreach (var user in Model.Where(o=>o.IsAlreadyTeamMember==true).ToList())
+                {
+                    index++;
+                    <tr>
+                        <td>@user.Name</td>
+                        <td>@user.Username</td>
+                        <td>@user.Email</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="4" align="center">No Record Found..</td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+</div>

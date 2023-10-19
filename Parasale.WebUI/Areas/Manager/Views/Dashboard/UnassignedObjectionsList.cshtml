@@ -1,0 +1,79 @@
+﻿@model MUnassingedObjectionVM
+@{
+    ViewData["Title"] = "Unassigned Objections";
+}
+
+
+<div class="row clearfix">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="header clearfix">
+                <h2 class="float-left"><strong>Unassigned </strong>Objections</h2>
+            </div>
+            <div class="body">
+                @await Component.InvokeAsync("ManagerUnassignedObjections")
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts{
+    <script src="~/lib/moment.js"></script>
+    <script src="~/lib/notify.js"></script>
+    <script>
+
+        var objectionNotification = [];
+
+        $("#objectionmodal").on('hidden.bs.modal', function () {
+            objectionNotification = [];
+        });
+
+        $(document).on('change', '.usertosendobjection', function () {
+            
+            var control = $(this);
+            var isTeamMember = control.is(':checked');
+            var userId = control.attr('data-userId');
+            var objectionId = control.attr('data-objectionId');
+            var managerUserId = control.attr('data-managerUserId');
+            if (isTeamMember) {
+                objectionNotification.push({
+                    PushedByUserId: managerUserId,
+                    PushedToUserId: userId,
+                    ObjectionId: objectionId
+                });
+            }
+            else {
+                $.each(objectionNotification, function (i) {
+                    if (objectionNotification[i].PushedByUserId === managerUserId && objectionNotification[i].PushedToUserId === userId && objectionNotification[i].ObjectionId === objectionId) {
+                        objectionNotification.splice(i, 1);
+                        return false;
+                    }
+                });
+            }
+        });
+
+
+        $(document).on('click', '#btnpushobjectiontouser', function (e) {
+            e.preventDefault();
+            var collectionId = $("#collectionId").val();
+            if (objectionNotification.length > 0) {
+                var url = $(this).attr('href');
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: { models: objectionNotification, collectionId: collectionId }
+                }).done(function (res) {
+                    if (res) {
+                        $.notify("Objection Pushed to Selected Collection", "success");
+                        window.location.reload(true);
+                    }
+                });
+            }
+            else {
+                $.notify("Please Select Atleast 1 User", "warn");
+            }
+        });
+    </script>
+
+}

@@ -1,0 +1,57 @@
+﻿@model CompanyRegisterViewModel
+
+@{
+    ViewData["Title"] = "CreateCompany";
+    
+
+}
+
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="CreateCompany">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            @Html.HiddenFor(model => model.register.Name)
+            @Html.HiddenFor(model => model.register.EmailAddress)
+            @Html.HiddenFor(model => model.register.Password)
+            @Html.HiddenFor(model => model.register.Username)
+            <div class="form-group">
+                @Html.LabelFor(model => model.company.CompanyName, new { @class = "control-label" })
+                @Html.TextBoxFor(model => model.company.CompanyName, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.company.CompanyName, "", new { @class = "text-danger" })
+                @*<label asp-for="CompanyName" class="control-label"></label>
+            <input asp-for="CompanyName" class="form-control" />
+            <span asp-validation-for="CompanyName" class="text-danger"></span>*@
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.company.EmailAddress, new { @class = "control-label" })
+                @Html.TextBoxFor(model => model.company.EmailAddress, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.company.EmailAddress, "", new { @class = "text-danger" })
+                @*<label asp-for="Address" class="control-label"></label>
+            <input asp-for="Address" class="form-control" />
+            <span asp-validation-for="Address" class="text-danger"></span>*@
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.company.Phone, new { @class = "control-label" })
+                @Html.TextBoxFor(model => model.company.Phone, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.company.Phone, "", new { @class = "text-danger" })
+                @*<label asp-for="Email" class="control-label"></label>
+            <input asp-for="Email" class="form-control" />
+            <span asp-validation-for="Email" class="text-danger"></span>*@
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.company.Address, new { @class = "control-label" })
+                @Html.TextAreaFor(model => model.company.Address, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.company.Address, "", new { @class = "text-danger" })
+                @*<label asp-for="Phone" class="control-label"></label>
+            <input asp-for="Phone" class="form-control" />
+            <span asp-validation-for="Phone" class="text-danger"></span>*@
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>

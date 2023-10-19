@@ -1,0 +1,80 @@
+﻿@model CheckInvitesViewModel
+
+@{
+    ViewData["Title"] = "GetUserLists";
+}
+
+
+<div class="row clearfix">
+    <div class="col-md-6">
+        <div class="card h-100 mb-0">
+            <div class="header clearfix pb-0">
+                <h2 class="float-left"><strong>Signed Up</strong> Users</h2>
+            </div>
+
+            <div class="body">
+
+                @if (Model.invitesList.Count() != 0)
+                {
+                    <ul class="list-group">
+
+                        @foreach (var signed in Model.invitesList)
+                        {
+                            if (signed.IsSigned)
+                            {
+                                <li class="list-group-item">@signed.Email <button class="badge badge-success m-0 float-right">Signed</button></li>
+                            }
+                        }
+
+                    </ul>
+                }
+                else
+                {
+                    <div class="col-md-12 text-center nodatadivStyle">
+                        <div class="ND_Img_Wrap">
+                            <p>No Data Found</p>
+                            @*<img src="~/ThemeStyles/images/NoDataImages/Invite users.svg" />*@
+                        </div>
+                       
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card h-100 mb-0">
+
+            <div class="header clearfix pb-0">
+                <h2 class="float-left"><strong>Not Signed Up</strong> Yet</h2>
+            </div>
+            <div class="body">
+                @if (Model.invitesList.Count() != 0)
+                {
+                    <ul class="list-group">
+                        @foreach (var signed in Model.invitesList)
+                        {
+                            if (!signed.IsSigned)
+                            {
+                                <li class="list-group-item">@signed.Email <button class="badge badge-danger m-0 float-right">Not Signed</button></li>
+                            }
+                        }
+
+                    </ul>
+                }
+                else
+                {
+                    <div class="col-md-12 text-center nodatadivStyle">
+                        <div class="ND_Img_Wrap">
+                            @*<img src="~/ThemeStyles/images/NoDataImages/Invite users.svg" />*@
+                            <p>No Data Found</p>
+                        </div>
+                       
+                    </div>
+                }
+
+
+            </div>
+        </div>
+    </div>
+ 
+</div>

@@ -1,0 +1,190 @@
+﻿@model DummyDataViewModel;
+
+<div class="row clearfix">
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <div class="card">
+            <div class="header pb-0 d-flex justify-content-between align-items-center">
+                <h2><strong>Delete Data</strong></h2>
+                <button class="btn btn-sm  btn-danger" id="resetData">Delete All</button>
+            </div>
+            <div class="body">
+                @if (Model.collection.Count() != 0 && Model.objection.Count() != 0 && Model.objectionLog.Count() != 0 && Model.cCS.Count() != 0 && Model.startObjections != null && Model.quickCollection != null)
+                {
+                   
+                        <div class="row">
+                            <div class="col-md-12">
+                                <table class="table table-striped table-borderless">
+                                    <tbody>
+
+                                        @if (Model.collection.Count() != 0)
+                                        {
+                                            <tr>
+                                                <td>Collections</td>
+                                                <td>
+                                                    <div class="checkbox ctmCheckbox">
+                                                        <input id="collection" class="deleteD" type="checkbox">
+                                                        <label for="collection"></label>
+                                                    </div>
+                                                </td>
+                                                @* <td><span class="zmdi zmdi-delete btn-xs  btn btn-danger deleteDummy" data-val="qcollection" id="@Model.quickCollection.Id"></span></td>*@
+                                            </tr>
+                                        }
+
+                                        @if (Model.objection.Count() != 0)
+                                        {
+                                            <tr id="Tobjections">
+                                                <td>Objections</td>
+                                                <td>
+                                                    <div class="checkbox ctmCheckbox">
+                                                        <input id="objection" class="deleteD" type="checkbox">
+                                                        <label for="objection"></label>
+                                                    </div>
+                                                </td>
+                                                @*<td><span class="zmdi zmdi-delete btn-xs  btn btn-danger deleteDummy" data-val="qcollection" id="@Model.quickCollection.Id"></span></td>*@
+                                            </tr>
+                                        }
+                                        @if (Model.objectionLog.Count() != 0)
+                                        {
+                                            <tr id="Tlogs">
+                                                <td>Objection Logs</td>
+                                                <td>
+                                                    <div class="checkbox ctmCheckbox">
+                                                        <input id="objectionLogs" class="deleteD" type="checkbox">
+                                                        <label for="objectionLogs"></label>
+                                                    </div>
+                                                </td>
+                                                @*<td><span class="zmdi zmdi-delete btn-xs  btn btn-danger deleteDummy" data-val="qcollection" id="@Model.quickCollection.Id"></span></td>*@
+                                            </tr>
+                                        }
+                                        @if (Model.cCS.Count() != 0)
+                                        {
+                                            <tr id="Tccs">
+                                                <td>Confidential and Consistency Report</td>
+                                                <td>
+                                                    <div class="checkbox ctmCheckbox">
+                                                        <input id="ccs" class="deleteD" type="checkbox">
+                                                        <label for="ccs"></label>
+                                                    </div>
+                                                </td>
+                                                @*<td><span class="zmdi zmdi-delete btn-xs  btn btn-danger deleteDummy" data-val="qcollection" id="@Model.quickCollection.Id"></span></td>*@
+                                            </tr>
+                                        }
+                                        @if (Model.quickCollection != null)
+                                        {
+                                            <tr>
+                                                <td>Quick Collections</td>
+                                                <td>
+                                                    <div class="checkbox ctmCheckbox">
+                                                        <input id="qCollection" class="deleteD" type="checkbox">
+                                                        <label for="qCollection"></label>
+                                                    </div>
+                                                </td>
+                                                @*<td><span class="zmdi zmdi-delete btn-xs  btn btn-danger deleteDummy" data-val="qcollection" id="@Model.quickCollection.Id"></span></td>*@
+                                            </tr>
+                                        }
+                                        @if (Model.startObjections != null)
+                                        {
+                                            <tr id="startObjections">
+                                                <td>Quick Objections</td>
+                                                <td>
+                                                    <div class="checkbox ctmCheckbox">
+                                                        <input id="qObjections" class="deleteD" type="checkbox">
+                                                        <label for="qObjections"></label>
+                                                    </div>
+                                                </td>
+                                                @*<td><span class="zmdi zmdi-delete btn-xs  btn btn-danger deleteDummy" data-val="qcollection" id="@Model.quickCollection.Id"></span></td>*@
+                                            </tr>
+                                        }
+
+                                        @*<td><a class=" m-0 btn btn-danger btn-xs deleteDummy" href="/Admin/Dashboard/Delete?id=@Model.quickCollection.Id&val=qucikCollection" data-val="qCollection" id="@Model.quickCollection.Id"><span class="zmdi zmdi-delete" data-val="qCollection" id="@Model.quickCollection.Id"></span></a></td>*@
+
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="col-md-12 text-right mt-3">
+                                <button class="float-right btn btn-sm btn-danger" id="deleteSelected">Delete Selected</button>
+                            </div>
+                        </div>
+                
+
+
+                }
+                else
+                {
+                    <span>No Record Found.</span>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/lib/BootboxJs/bootbox.min.js"></script>
+    <script src="~/lib/notify.js"></script>
+    <script src="~/lib/HoldOn.js-master/src/js/HoldOn.js"></script>
+    <script>
+        $(document).on('click', '#resetData', function (e) {
+            e.preventDefault();
+            var url = '/Manager/Dashboard/DeleteAllData';
+            bootbox.confirm({
+                message: "Are you Sure You Want To Delete All Data?",
+                closeButton: false, buttons: {
+                    confirm: { label: 'Yes', className: 'btn-info' },
+                    cancel: { label: 'No', className: 'btn-danger' }
+                },
+                callback: function (result) {
+                    if (result) {
+                        $.ajax({ url: url }).done(function (result) {
+                            if (result) {
+                                bootbox.alert({
+                                    message: "Data Deleted Successfully!",
+                                    callback: function () { location.reload(); }
+                                });
+                            }
+                        });
+                    }
+                }
+            });
+        });
+        
+        var dataArray = [];
+        $(document).on("change", ".deleteD", function () {
+            if ($(this).is(':checked')) {
+                dataArray.push($(this).attr('id'));
+            }
+            else {
+                dataArray.splice($.inArray($(this).attr('id'), dataArray), 1);
+            }
+        });
+        $(document).on("click", "#deleteSelected", function (e) {
+
+            e.preventDefault();
+            
+            var url = '/Manager/Dashboard/Delete';
+            bootbox.confirm({
+                message: "Are you Sure You Want To Delete All Data?",
+                closeButton: false, buttons: {
+                    confirm: { label: 'Yes', className: 'btn-info' },
+                    cancel: { label: 'No', className: 'btn-danger' }
+                },
+                callback: function (result) {
+                    if (result) {
+                        $.ajax({
+                            type: 'POST', url: url, traditional: true, data: { dataArray: dataArray },
+                        }).done(function (result) {
+                            if (result) {
+                                bootbox.alert({
+                                    message: "Data Deleted Successfully!",
+                                    callback: function () { location.reload(); }
+                                });
+                            }
+                        });
+                    }
+                }
+            });
+
+        });
+           
+    </script>
+}

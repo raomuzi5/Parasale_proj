@@ -1,0 +1,51 @@
+﻿@model DashboardIndexViewModel
+
+@{
+    ViewData["Title"] = "Tutorial";
+    var voiceboarding = Model.voiceBoarding;
+}
+@if (Model.currentStep != null)
+{
+    <a asp-area="Admin" asp-controller="Dashboard" asp-action="Tutorial"><i class="zmdi zmdi-alarm"></i><span>Continue where I left off</span> </a>
+}
+
+@section Scripts{
+
+    @if (voiceboarding != true)
+    {
+        <script src="~/assets/onboarding/js/voice-onboarding.js"></script>
+    }
+   <script>
+        $(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+    $("#txtwelcome").html("Tutorials");
+    });
+   </script>
+    @*<script>
+            $(document).ready(function () {
+                $(".ttour-shadow").css('display', 'none');
+                var btnHtml = '';
+                btnHtml += '<button id="ppVoice" class="ppVoice">Play</button>';
+                btnHtml += '<button id="skip" class="skip">Save For Later</button>';
+                $('.ttour-footer').append(btnHtml);
+                $(".skip").on("click", function () {
+                    $.ajax({
+                        url: '/Home/SaveLater/',
+                        data: { currentStep: currentStep },
+                        success: function (res) {
+                            $.notify("Successfully saved for later", success);
+                        }
+                    });
+                });
+                $(".ppVoice").on("click", function () {
+                    if ($(this).text() === "Play") {
+                        $(this).text("Pause");
+                        synth.pause();
+                    }
+                    else {
+                        $(this).text("Play");
+                        synth.resume();
+                    }
+                });
+        </script>*@
+}

@@ -1,0 +1,158 @@
+﻿@model Parasale.WebUI.Models.LoginViewModel
+@{
+    ViewData["Title"] = "Login";
+
+}
+
+<style>
+    .validation-summary-errors ul {
+        padding: 0;
+        list-style: none;
+    }
+
+    .alert-success {
+        color: #ffffff !important;
+        background-color: #2cd44a !important;
+        border-color: #2cd44a !important;
+    }
+
+    .alert {
+        border-radius: 0rem !important;
+        margin-bottom: -20px !important;
+    }
+
+    .u-mb-20 {
+        margin-bottom: 0rem !important;
+        margin-top: 1.25rem !important;
+    }
+
+    .d-flex {
+        margin-top: 26px;
+    }
+    .header {
+        display: none;
+    }
+
+    /*.field-validation-error {
+        margin-left: -100px;
+    }*/
+</style>
+
+<section data-dark-overlay="5" class="u-h-100vh u-flex-center py-0" style="background:url(/assets/img/login/coming-soon-bg.jpg) no-repeat; background-size:cover; background-position: top center;">
+    <div class="container">
+
+        <!--Establish the top of the log-in box where it says log-in wrapped in green-->
+        <div class="row">
+            <div class="col-lg-6 m-auto text-center">
+                <div class="card box-shadow-v2 bg-white u-of-hidden">
+                    <h2 class="bg-purple m-0 py-3 text-white">Parasale Login</h2>
+                    <div class="alert alert-success" role="alert">
+                        Whether it's your first time, or hundreth. This is the place to get started.
+                    </div>
+                    <div class="p-4 p-md-5">
+                        <div id="loginform">
+                            <form asp-area="" asp-controller="Account" asp-action="Login" method="post">
+                                <!--Establish person icon-green-->
+                                <div class="input-group u-rounded-50 border u-of-hidden u-mb-20">
+                                    <div class="input-group-addon bg-white border-0 pl-4 pr-0">
+                                        <span class="icon icon-User text-purple"></span>
+                                    </div>
+                                    @Html.HiddenFor(model => model.Id)
+                                    <input asp-for="Username" type="text" class="form-control border-0 p-3" placeholder="Username">
+                                </div>
+                                <span asp-validation-for="Username" class="text-danger small"></span>
+
+                                <!--Establish mail icon-green-->
+                                <div class="input-group u-rounded-50 border u-of-hidden u-mb-20">
+                                    <div class="input-group-addon bg-white border-0 pl-4 pr-0">
+                                        <span class="icon icon-ClosedLock text-purple"></span>
+                                    </div>
+                                    <input type="password" asp-for="Password" class="form-control border-0 p-3" placeholder="Password">
+                                </div>
+                                <span asp-validation-for="Password" class="text-danger small"></span>
+
+                                <!--Establish the remember me and forgot password buttons-->
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <label class="custom-control custom-checkbox text-left m-0">
+                                        <input type="checkbox" class="custom-control-input">
+                                        <span class="custom-control-indicator mt-1"></span>
+                                        <span class="custom-control-description">Remember me</span>
+                                    </label>
+                                    <a id="btnforgotpassword" asp-area="" asp-controller="Account" asp-action="ForgotPassword">Forgot password?</a>
+                                </div>
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                <!--Establish the login now button-->
+                                <button type="submit" class="btn btn-pulple-light btn-rounded u-mt-20 u-w-170">
+                                    Login
+                                </button>
+                            </form>
+                        </div>
+                        <div id="forgotpasswordform" style="display:none">
+                            <form asp-area="" asp-controller="Account" asp-action="SendPasswordResetLink" method="post">
+                                <!--Establish person icon-green-->
+                                <div class="input-group u-rounded-50 border u-of-hidden u-mb-20">
+                                    <div class="input-group-addon bg-white border-0 pl-4 pr-0">
+                                        <span class="icon icon-User text-purple"></span>
+                                    </div>
+                                    <input asp-for="Email" type="text" class="form-control border-0 p-3" placeholder="Email Address" required>
+                                    @*<input name="Email" type="text" class="form-control border-0 p-3" placeholder="Email">*@
+                                   
+                                </div>
+                                <div> <span asp-validation-for="Email" class="text-danger small"></span></div>
+                                <!--Establish the login now button-->
+                                <button type="submit" class="btn btn-pulple-light btn-rounded u-mt-20 u-w-170">
+                                    Reset
+                                </button>
+                                <br />
+                                <a id="btnsignin" asp-area="" asp-controller="Account" asp-action="Login">Sign In</a>
+
+                            </form>
+                        </div>
+                    <br/>
+                        <!--Establish the social media buttons-->
+                        @*<ul class="list-inline u-my-40">
+                            <li class="mb-3">Or Sign In with</li>
+                            <li class="list-inline-item">
+                                <a href="" class="fa fa-facebook u-w-45 u-h-45 u-flex-center text-white rounded-circle bg-facebook"></a>
+                            </li>
+                            <li class="list-inline-item">
+                                <a href="" class="fa fa-twitter u-w-45 u-h-45 u-flex-center text-white rounded-circle bg-twitter"></a>
+                            </li>
+                            <li class="list-inline-item">
+                                <a href="" class="fa fa-google-plus u-w-45 u-h-45 u-flex-center text-white rounded-circle bg-google"></a>
+                            </li>
+                        </ul>*@
+
+                        <!--Establish the don't have an account button-->
+                        <p class="m-0">
+                            Don't have an account? <a asp-area="" asp-controller="Account" asp-action="Register" class="text-purple">Sign up</a>
+                        </p>
+                    </div> <!-- END p-4 p-md-5-->
+                </div>  <!-- END card-->
+            </div> <!-- END col-lg-5-->
+        </div> <!-- END row-->
+    </div> <!-- END container-->
+
+</section> <!-- END intro-hero-->
+
+@section Scripts{
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+    <script>
+        $("#btnforgotpassword").click(function (e) {
+            e.preventDefault();
+            $("#loginform").css("display", "none");
+            $("#forgotpasswordform").css("display", "inline");
+        });
+
+        $("#btnsignin").click(function (e) {
+            e.preventDefault();
+            $("#loginform").css("display", "inline");
+            $("#forgotpasswordform").css("display", "none");
+        });
+        //sessionStorage.clear();
+        localStorage.clear();
+       
+    </script>
+}

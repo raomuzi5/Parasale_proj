@@ -1,0 +1,408 @@
+﻿@model IEnumerable<Parasale.WebUI.Areas.Manager.Models.UserListViewModel>
+
+@{
+    ViewData["Title"] = "Users";
+    var voiceboarding = ViewBag.voicebaording;
+    var currentStep = ViewBag.currentStep;
+}
+
+@section Styles{
+    <style>
+
+
+        .checkbox label {
+            position: absolute;
+        }
+
+        .ctm-Spinner {
+            position: relative;
+            width: 125px;
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        /*.ctm-Spinner .spinner-border {
+            position: absolute;
+            right: 4%;
+        }*/
+    </style>
+    <link href="~/lib/HoldOn.js-master/src/css/HoldOn.css" rel="stylesheet" />
+}
+
+<div class="row clearfix">
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <div class="card">
+            <button id="autoplay" class="d-none">play</button>
+            <div class="header d-flex pb-0 align-items-center justify-content-between">
+                <h2 class=""><strong>Users</strong> List</h2>
+                <a id="btnassignuser" data-toggle="tooltip" data-placement="top" title="Manage Team" asp-area="Manager" asp-controller="User" asp-action="UnassignedUsers" class="btn btn-sm btn-primary">
+                    <span class="zmdi zmdi-accounts-add"></span>
+                </a>
+            </div>
+            <div class="body">
+                <div class="body table-responsive">
+                    @if (Model != null && Model.Count() > 0)
+                    {
+                        <table class="table table-hover table-striped table-borderless">
+                            <thead>
+                                <tr>
+                                    <th>Sr.</th>
+                                    <th>Name</th>
+                                    <th>Username</th>
+                                    <th>Email</th>
+                                    <th>Action</th>
+                                    <th>Objections</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model != null && Model.Count() > 0)
+                                {
+                                    int index = 0;
+                                    foreach (var user in Model)
+                                    {
+                                        index++;
+                                        <tr>
+                                            <td>@index</td>
+                                            <td>@user.Name</td>
+                                            <td>@user.Username</td>
+                                            <td><a href="mailto:@user.Email">@user.Email</a></td>
+                                            <td>
+                                                <a id="btnPushUnassigedObjectionsToCol" data-username="@user.Name" data-toggle="tooltip" data-placement="top" title="Assign Collection to User" asp-area="Manager" asp-controller="Dashboard" asp-action="CollectionList" asp-route-UserId="@user.Id" class="m-0 btn btn-success btn-xs">
+                                                    <span class="zmdi zmdi-mail-send"></span>
+                                                </a>&nbsp;
+
+                                                @*<a id="btnpushobjectiontslistouser" data-toggle="tooltip" data-placement="top" title="Push Objections to User" asp-area="Manager" asp-controller="Dashboard" asp-action="ObjectionsList" asp-route-UserId="@user.Id" class="m-0 btn btn-info btn-xs">
+                                                        <span class="zmdi zmdi-mail-send"></span>
+                                                    </a>*@
+                                            </td>
+                                            <td>
+                                                <a id="btnviewcompletedobjection" data-username="@user.Name" data-toggle="tooltip" data-placement="top" title="User Completed Objection" class="ctm-Spinner btn btn-primary btn-xs m-0 manager" asp-area="Manager" asp-controller="User" asp-action="UserCompletedObjections" asp-route-UserName="@user.Username">
+                                                    <span id="spinnercompleted" class="spinner-border spinner-border-sm" hidden role="status">
+
+                                                    </span> (@user.CompletedCount) Completed
+                                                </a> |
+                                                <a id="btnviewmissedobjection" data-username="@user.Name" data-toggle="tooltip" data-placement="top" title="User Missed Objection" class="ctm-Spinner btn btn-primary btn-xs m-0" asp-area="Manager" asp-controller="User" asp-action="UserMissedObjections" asp-route-UserName="@user.Username">
+                                                    <span id="spinnermissed" class="spinner-border spinner-border-sm" hidden role="status">
+
+                                                    </span> (@user.MissedCount) Missed
+                                                </a>
+                                            </td>
+
+
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="6" align="center">No Record Found.</td>
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <div class="col-md-12 text-center nodatadivStyle">
+                            <div class="ND_Img_Wrap">
+                                <p>No Data Found</p>
+                                @*<img src="~/ThemeStyles/images/NoDataImages/Users.svg" />*@
+                            </div>
+                            
+                        </div>
+                    }
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+@section Scripts{
+    <script src="~/lib/BootboxJs/bootbox.min.js"></script>
+    <script src="~/lib/moment.js"></script>
+    <script src="~/lib/notify.js"></script>
+    <script src="~/lib/HoldOn.js-master/src/js/HoldOn.js"></script>
+    @if (voiceboarding != true)
+    {
+        @if (currentStep == null)
+        {
+        <script src="~/assets/onboarding/js/voice-onboarding.js"></script>
+        }
+    }
+    <script>
+
+        var userName;
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+            $("#txtwelcome").html("View Objections history and Push Objections to Users");
+        });
+
+        var objectionNotification = [];
+
+        $("#objectionmodal").on('hidden.bs.modal', function () {
+            objectionNotification = [];
+        });
+
+        $(document).on('click', '#btnpushobjectiontouser', function (e) {
+            e.preventDefault();
+            if (objectionNotification.length > 0) {
+                var url = $(this).attr('href');
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: { models: objectionNotification }
+                }).done(function (res) {
+                    if (res) {
+                        $.notify("Objection Pushed to Selected User", "success");
+                        $('#objectionmodal').modal('toggle');
+                    }
+                });
+            }
+            else {
+                $.notify("Please Select Atleast 1 User", "warn");
+            }
+        });
+
+
+        $(document).on('change', '.usertosendcollection', function () {
+
+            var control = $(this);
+            var isChecked = control.is(':checked');
+            var userId = control.attr('data-userId');
+
+            var CollectionId = control.attr('data-collectionId');
+            var ManagerId = control.attr('data-managerUserId');
+
+
+            $.ajax({
+                url: "/Manager/User/UpdateAssignCollection",
+                type: "GET",
+                data: { isChecked: isChecked, userId: userId, CollectionId: CollectionId, ManagerId: ManagerId }
+            }).done(function (res) {
+
+                if (res.removed) {
+                    $.notify(res.user + " " + " is removed from Collection", "success");
+                }
+                else {
+                    $.notify("Collection is assigned to " + res.user, "success");
+                }
+            });
+        });
+        //  $(document).on('click', '#btnpushCollectiontouser', function (e) {
+        //    e.preventDefault();
+        //    if (objectionNotification.length > 0) {
+        //        var url = $(this).attr('href');
+        //        $.ajax({
+        //            url: url,
+        //            type: "POST",
+        //            data: { models: objectionNotification }
+        //        }).done(function (res) {
+        //            if (res) {
+        //                $.notify("Objection Pushed to Selected User", "success");
+        //                $('#objectionmodal').modal('toggle');
+        //            }
+        //        });
+        //    }
+        //    else {
+        //        $.notify("Please Select Atleast 1 User", "warn");
+        //    }
+        //});
+        $(document).ready(function () {
+    //     var btnHtml = '';
+    // btnHtml += '<button id="ppVoice" class="ppVoice btn btn-danger">Play</button>';
+    //btnHtml += '<button id="skip" class="skip btn btn-light">Save For Later</button>';
+    //        $('.ttour-footer').prepend(btnHtml);
+            $(".ppVoice").on("click", function () {
+
+                if ($(this).text() === "Play") {
+                    $(this).text("Pause");
+                    synth.resume();
+                }
+                else {
+                    $(this).text("Play");
+                    synth.pause();
+                }
+            });
+           $(".skip").on("click", function () {
+    var Urlpath = window.location.href;
+    $.ajax({
+
+        url: '/Speech/SaveLater/',
+        data: { Urlpath:Urlpath, currentStep: currentStep },
+        success: function (res) {
+            $.notify("Successfully saved for later", 'success');
+        }
+    });
+});
+
+        });
+
+        $(document).on('change', '.checkisteammember', function () {
+
+            var control = $(this);
+            var isTeamMember = control.is(':checked');
+            var userId = control.attr('data-userId');
+
+            $.ajax({
+                url: "/Manager/User/UpdateTeam",
+                type: "GET",
+                data: { isTeamMember: isTeamMember, userId: userId }
+            }).done(function (res) {
+
+                if (res.removed) {
+                    $.notify(res.user + " " + "Removed from Team", "success");
+                }
+                else {
+                    $.notify(res.user + " " + "Added to Team", "success");
+                }
+            });
+        });
+        $(document).on('click', '#btnassignuser', function (e) {
+            e.preventDefault();
+            //managerUserId = $(this).attr("data-managerUserId");
+            var url = $(this).attr('href');
+
+            $.ajax({
+                url: url,
+                method: "GET",
+                beforeSend: function () {
+                    HoldOn.open({
+                        theme: "sk-cube-grid"
+                    });
+                }
+            }).done(function (res) {
+                HoldOn.close();
+                $("#CreateNewModal-label").html("Manage Team");
+                $("#CreateNewBody").html(res);
+                $("#CreateNewModal").modal();
+            });
+        });
+
+        $(document).on('change', '.usertosendobjection', function () {
+            var control = $(this);
+            var isTeamMember = control.is(':checked');
+            var userId = control.attr('data-userId');
+            var objectionId = control.attr('data-objectionId');
+            var managerUserId = control.attr('data-managerUserId');
+            if (isTeamMember) {
+                objectionNotification.push({
+                    PushedByUserId: managerUserId,
+                    PushedToUserId: userId,
+                    ObjectionId: objectionId
+                });
+            }
+            else {
+                $.each(objectionNotification, function (i) {
+                    if (objectionNotification[i].PushedByUserId === managerUserId && objectionNotification[i].PushedToUserId === userId && objectionNotification[i].ObjectionId === objectionId) {
+                        objectionNotification.splice(i, 1);
+                        return false;
+                    }
+                });
+            }
+        });
+
+        $(document).on('click', '#btnpushobjectiontslistouser', function (e) {
+            e.preventDefault();
+            var url = $(this).attr('href');
+            $.ajax({
+                url: url,
+                type: "GET"
+            }).done(function (res) {
+                $("#objectionmodal-label").html('Objections List');
+                $("#objectionmodalbody").html(res);
+                $("#objectionmodal").modal();
+            });
+        });
+
+        $(document).on('click', '#btnviewcompletedobjection', function (e) {
+            e.preventDefault();
+            var control = $(this);
+            userName = control.attr('data-username');
+            var url = control.attr('href');
+            var spinner = control.find('#spinnercompleted');
+            $.ajax({
+                url: url,
+                beforeSend: function () {
+                    spinner.prop('hidden', false);
+                }
+            }).done(function (res) {
+                spinner.prop('hidden', true);
+                $("#objectionmodal-label").html('Completed Objections by <strong>' + userName + "</strong>");
+                $("#objectionmodalbody").html(res);
+                $('.momentTime').each(function () {
+                    var d = moment($(this).html(), "YYYYMMDDHHmmss").fromNow();
+                    $(this).html(d);
+                });
+                $("#objectionmodal").modal();
+            });
+        });
+
+        $(document).on('click', '#btnviewmissedobjection', function (e) {
+            e.preventDefault();
+            var control = $(this);
+            userName = control.attr('data-username');
+            var url = control.attr('href');
+            var spinner = control.find('#spinnermissed');
+            $.ajax({
+                url: url,
+                beforeSend: function () {
+                    spinner.prop('hidden', false);
+                }
+            }).done(function (res) {
+                spinner.prop('hidden', true);
+                $("#objectionmodal-label").html('Missed Objections by <strong>' + userName + "</strong>");
+                $("#objectionmodalbody").html(res);
+                $('.momentTime').each(function () {
+                    var d = moment($(this).html(), "YYYYMMDDHHmmss").fromNow();
+                    $(this).html(d);
+                });
+                $("#objectionmodal").modal();
+            });
+        });
+
+        $(document).on('click', '#btnPushUnassigedObjectionsToCol', function (e) {
+            e.preventDefault();
+            var url = $(this).attr('href');
+            userName = $(this).attr('data-username');
+            $.ajax({
+                url: url,
+                type: "GET"
+            }).done(function (res) {
+                $("#objectionmodal-label").html('Assign Collection(s) to <strong>' + userName + "</strong>");
+                $("#objectionmodalbody").html(res);
+                $("#objectionmodal").modal();
+            });
+        });
+
+                    //$(document).on('change', '.usertosendcollection', function () {
+
+                    //    var control = $(this);
+                    //    var isCollection = control.is(':checked');
+                    //    var userId = control.attr('data-userId');
+                    //    var collectionId = control.attr('data-collectionId');
+                    //    var managerUserId = control.attr('data-managerUserId');
+                    //    debugger
+                    //    if (isCollection) {
+                    //        objectionNotification.push({
+
+                    //            PushedToUserId: userId,
+                    //            CollectionId: collectionId
+                    //        });
+                    //    }
+                    //    else {
+                    //        $.each(objectionNotification, function (i) {
+                    //            if (objectionNotification[i].PushedToUserId === userId && objectionNotification[i].CollectionId === collectionId) {
+                    //                objectionNotification.splice(i, 1);
+                    //                return false;
+                    //            }
+                    //        });
+                    //    }
+                    //});
+    </script>
+}

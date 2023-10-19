@@ -1,0 +1,140 @@
+﻿@model IEnumerable<Parasale.WebUI.Areas.Admin.Models.UserListViewModel>
+@{
+    ViewData["Title"] = "Teams";
+   var voiceboarding= ViewBag.voiceboarding;
+}
+<style>
+    #accordion [aria-expanded="true"] {
+        color: #fff;
+        background: #8c99e0;
+    }
+
+    #accordion .card-header {
+        border: none;
+    }
+
+    #accordion [aria-expanded="true"] + [data-parent="#accordion"] .card-body {
+        border: 1px solid #8c99e0;
+    }
+</style>
+
+<div class="row clearfix">
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <div class="card teamsss">
+            <div class="header pb-0">
+                <button id="autoplay" class="d-none">play</button>
+                <h2><strong>Teams</strong></h2>
+            </div>
+            <div class="body">
+                @if (Model.Count() > 0)
+                {
+                    <div id="accordion">
+                        @foreach (var mode in Model.Where(o => o.IsManager).ToList())
+                        {
+                            <div class="card mb-0 userTeam">
+                                <div class="card-header py-1 d-flex justify-content-between align-items-center" id="" data-toggle="collapse" data-target="#collapse@(mode.Id)">
+                                    <div class="">
+                                        <h6 class="mb-0">
+                                            @mode.Username
+                                        </h6>
+                                    </div>
+                                    <div class="">
+                                        <a id="addnewbtn" data-toggle="tooltip" data-placement="top" title="Manage Team for @mode.Username" asp-area="Admin" asp-controller="User" asp-action="UsersList" asp-route-id="@mode.Id" data-managerUserId="@mode.Id" class="m-0 btn bg-light text-dark btn-sm mylinks addnewbtn"><span class="zmdi zmdi-plus"></span></a>
+                                    </div>
+                                </div>
+
+                                <div id="collapse@(mode.Id)" class="collapse " data-parent="#accordion">
+                                    <div class="card-body p-2">
+                                        <div class="row">
+                                            <div class="col-md-5">
+                                                <table class="table table-striped table-borderless">
+                                                    <tbody>
+                                                        @foreach (var child in Model.Where(o => o.ManagerUserId == mode.Id && !o.IsManager).ToList())
+                                                        {
+                                                            <tr>
+                                                                <td>@child.Username</td>
+                                                                <td>@child.Email</td>
+                                                                @*<td>
+                                                                        <a id="removebtn" data-toggle="tooltip" data-placement="top" title="Remove Team Member" asp-area="Admin" asp-controller="User" asp-action="RemoveFromTeam" asp-route-id="@child.Id" class="m-0 btn btn-danger btn-xs"><span class="zmdi zmdi-close"></span></a>
+                                                                    </td>*@
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                    </div>
+                }
+                else
+                {
+                    <div class="col-md-12 text-center nodatadivStyle">
+                        <div class="ND_Img_Wrap">
+                            <p>No Data Found</p>
+                            @*<img src="~/ThemeStyles/images/NoDataImages/Teams.svg" />*@
+                        </div>
+                       </div>
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts{
+
+    <script src="~/lib/BootboxJs/bootbox.min.js"></script>
+    <script src="~/lib/notify.js"></script>
+    <script src="~/lib/HoldOn.js-master/src/js/HoldOn.js"></script>
+@if (voiceboarding != true)
+{
+    <script src="~/assets/onboarding/js/voice-onboarding.js"></script>
+}
+    <script>
+        $(document).ready(function () {
+            var managerUserId;
+
+            $(document).on('change', '.checkisteammember', function () {
+                var control = $(this);
+                var isTeamMember = control.is(':checked');
+                var userId = control.attr('data-userId');
+
+                $.ajax({
+                    url: "/Admin/user/UpdateTeam",
+                    type: "GET",
+                    data: { isTeamMember: isTeamMember, userId: userId, managerUserId: managerUserId }
+                }).done(function (res) {
+                    if (res.removed) {
+                        $.notify(res.user + " " + "Removed from Team", "success");
+
+                    }
+                    else {
+                        $.notify(res.user + " " + "Added to Team", "success");
+                    }
+                });
+            });
+            $(document).on('click', '#addnewbtn', function (e) {
+                e.preventDefault();
+                managerUserId = $(this).attr("data-managerUserId");
+                //var url = $(this).attr('href');
+                //$.ajax({
+                //    url: url,
+                //    method: "GET",
+                //    beforeSend: function () {
+                //        HoldOn.open({
+                //            theme: "sk-cube-grid"
+                //        });
+                //    }
+                //}).done(function (res) {
+                //    HoldOn.close();
+                //    $("#CreateNewModal-label").html("Assign Users");
+                //    $("#CreateNewBody").html(res);
+                //    $("#CreateNewModal").modal();
+                //});
+            });
+        });
+    </script>
+}

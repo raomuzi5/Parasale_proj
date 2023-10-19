@@ -1,0 +1,335 @@
+
+.Para-popover-width .popover {
+    max-width: 400px !important;
+}
+
+
+table.table .btn {
+    padding: 5px 10px
+}
+
+table.table td, table.table th {
+    padding-top: 8px;
+    padding-bottom: 8px;
+    vertical-align: middle !important;
+    border-bottom: none;
+}
+
+table.table thead tr{
+    background: #8c99e0;
+    color: #fff;
+}
+table.table.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(140, 153, 224, 0.05);
+}
+.alert.alert-success {
+    background-color: rgb(101, 114, 184) !important;
+}
+
+.user-info {
+    margin-top: 30px;
+}
+
+.ctm-image {
+    padding: 0 !important;
+    border-radius: 100%;
+    box-shadow: 0px 0px 0px 3px #8c99e0;
+    height: 100px;
+    width: 100px;
+}
+.image {
+    margin-bottom: 20px;
+}
+
+.zmdi-power {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.ctm-logotxt {
+    margin-left: 6px;
+}
+
+.bootstrap-select {
+    padding: 0 !important;
+}
+
+    .bootstrap-select button {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        margin: 0 !important;
+        line-height: 2em;
+    }
+
+    .bootstrap-select button {
+        outline: none !important;
+    }
+
+        .bootstrap-select button:focus {
+            outline: none !important;
+        }
+
+
+    .bootstrap-select .dropdown-menu {
+        margin: 0;
+    }
+
+table.table .ctmCheckbox {
+    position: relative;
+}
+
+    table.table .ctmCheckbox label {
+        position: absolute;
+        top: -7px;
+    }
+
+.card table.table {
+    margin: 0;
+    border-collapse:collapse !important;
+}
+.text-box {
+    border: 1px solid #ddd;
+    overflow: hidden;
+    max-height: 250px;
+    overflow: auto;
+    
+    border-radius:6px;
+}
+
+    .text-box p {
+        border-bottom: 1px solid #ddd;
+        margin: 0;
+        padding: 10px 15px;
+    }
+
+    .text-box :last-child {
+        border-bottom: none !important;
+    }
+
+    .text-box p::before {
+        content: "\f105";
+        font-family: FontAwesome;
+        margin-right: 10px;
+        color: #8c99e0;
+        font-size: 18px;
+        font-weight: bold;
+    }
+.PS_checkbox.switcher {
+    display: inline-block;
+    margin-right: 15px;
+}
+
+div.PS_checkbox.switcher label,
+div.radio.switcher label {
+    cursor: pointer;
+    padding: 0;
+}
+
+    div.PS_checkbox.switcher label *,
+    div.radio.switcher label * {
+        vertical-align: middle;
+    }
+
+    div.PS_checkbox.switcher label input,
+    div.radio.switcher label input {
+        display: none;
+    }
+
+        div.PS_checkbox.switcher label input + span,
+        div.radio.switcher label input + span {
+            position: relative;
+            display: inline-block;
+            margin-right: 5px;
+            width: 56px;
+            height: 28px;
+            background: #f2f2f2;
+            border: 1px solid #eee;
+            border-radius: 50px;
+            transition: all 0.3s ease-in-out;
+        }
+
+            div.PS_checkbox.switcher label input + span small,
+            div.radio.switcher label input + span small {
+                position: absolute;
+                display: block;
+                width: 50%;
+                height: 100%;
+                background: #fff;
+                border-radius: 50%;
+                transition: all 0.3s ease-in-out;
+                left: 0;
+            }
+
+        div.PS_checkbox.switcher label input:checked + span,
+        div.radio.switcher label input:checked + span {
+            background: #8c99e0;
+            border-color: #8c99e0;
+        }
+
+            div.PS_checkbox.switcher label input:checked + span small,
+            div.radio.switcher label input:checked + span small {
+                left: 50%;
+            }
+
+.checkbox.switcher input {
+    visibility: hidden;
+}
+
+.b-none{
+    border:none;
+}
+/*.collectionHeight .btn.dropdown-toggle {
+    height:46px;
+}*/
+
+.dateAndSwitchRow .col-form-label {
+    white-space :nowrap
+}
+
+@media only screen and (max-width: 1500px) {
+    .dateAndSwitchRow div.PS_checkbox.switcher label input + span, .dateAndSwitchRow div.radio.switcher label input + span {
+        margin-right: 0;
+    }
+
+    .dateAndSwitchRow div.PS_checkbox.switcher label input + span, .dateAndSwitchRow div.radio.switcher label input + span {
+        width: 40px;
+        height: 20px;
+    }
+    .PS_checkbox.switcher{
+        margin-right:0;
+    }
+
+    
+}
+.dateAndSwitchRow .form-group, div.PS_checkbox.switcher > label {
+    margin-bottom: 0;
+}
+@media screen and (min-width: 1020px) and (max-width: 1030px) {
+   
+    .dateAndSwitchRow div.PS_checkbox.switcher small{
+        font-size:82%;
+    }
+}
+    @media screen and (min-width: 750px) and (max-width: 790px) {
+        .dateAndSwitchRow > :first-child {
+            flex: 0 0 100%;
+            max-width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .dateAndSwitchRow > :last-child {
+            flex: 0 0 100%;
+            max-width: 100%;
+            text-align: left !important;
+        }
+    }
+
+    @media only screen and (max-width: 750px) {
+        .dateAndSwitchRow > :first-child {
+            margin-bottom: 10px;
+        }
+
+        .dateAndSwitchRow > :last-child {
+            text-align: left !important;
+            font-size: 0;
+        }
+
+            .dateAndSwitchRow > :last-child > .PS_checkbox {
+                width: calc(100% /2 );
+                margin-bottom: 10px;
+                font-size: 14px;
+                white-space: nowrap;
+            }
+    }
+
+    .tblScroll .table-responsive {
+        max-height: 400px;
+        height: 100%;
+    }
+
+
+    .table-responsive::-webkit-scrollbar {
+        width: 4px;
+        height: 4px;
+    }
+
+
+    .table-responsive::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+
+    .table-responsive::-webkit-scrollbar-thumb {
+        background: #c3c3c3;
+    }
+
+
+        .table-responsive::-webkit-scrollbar-thumb:hover {
+            background: #a2a2a2;
+        }
+
+    .modal .close {
+        color: inherit;
+    }
+
+    .dataTables_wrapper .table-responsive {
+        margin-bottom: 10px;
+    }
+
+    .dataTables_wrapper th.sorting_asc:before, .dataTables_wrapper th.sorting_asc::after, .dataTables_wrapper th.sorting_desc:before, .dataTables_wrapper th.sorting_desc::after, .dataTables_wrapper th.sorting:before, .dataTables_wrapper th.sorting::after {
+        top: 7px;
+    }
+
+    table td > label {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        margin: 0;
+        width: 120px;
+    }
+
+    .bootstrap-select .btn {
+        font-weight: normal;
+    }
+
+    .SelectLang .languageDrop {
+        min-width: 70%;
+        max-width: 100%;
+        flex-grow: 2;
+        padding-right: 10px;
+    }
+
+p#demo {
+    font-weight: bold;
+}
+
+.highcharts-credits {
+    display: none !important;
+}
+
+.nodatadiv {
+    display: none;
+}
+
+
+.nodatadivStyle {
+    text-align: center;
+    padding: 50px
+}
+
+    .nodatadivStyle .ND_Img_Wrap {
+        width: 250px;
+        max-width: 100%;
+        margin: 0 auto;
+    }
+
+        .nodatadivStyle .ND_Img_Wrap img {
+            width: 100%;
+            margin: 0 auto;
+        }
+
+    .nodatadivStyle p {
+        font-size: 18px;
+        margin: 0;
+        margin-top: 15px;
+    }

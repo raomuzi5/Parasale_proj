@@ -1,0 +1,55 @@
+﻿@model IEnumerable<CollectionListViewModel>
+
+
+<div class="body table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Add</th>
+                <th>Collection</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Count() > 0)
+            {
+                int index = 0;
+                foreach (var collection in Model)
+                {
+                    index++;
+                    <tr>
+                        <td>
+                            @if (collection.IsCollectionAssigned)
+                            {
+                                <div class="checkbox ctmCheckbox">
+                                    <input id="@collection.Id" class="usertosendcollection" type="checkbox" checked data-collectionId="@collection.Id" data-managerUserId="@collection.ManagerUserId" data-userId="@collection.UserId">
+                                    <label for="@collection.Id"></label>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="checkbox ctmCheckbox">
+                                    <input id="@collection.Id" class="usertosendcollection" type="checkbox" data-collectionId="@collection.Id" data-managerUserId="@collection.ManagerUserId" data-userId="@collection.UserId">
+                                    <label for="@collection.Id"></label>
+                                </div>
+                            }
+
+                        </td>
+                        <td>@collection.CollectionName</td>
+
+                    </tr>
+                }
+                @*<tr>
+                    <td colspan="4"><a id="btnpushCollectiontouser" asp-area="Manager" asp-controller="User" asp-action="PushCollection" class="btn btn-primary">Push</a></td>
+                </tr>*@
+            }
+            else
+            {
+                <tr>
+                    <td colspan="4" align="center">No Record Found..</td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,49 @@
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Parasale.Models;
+using Parasale.Repository;
+using Parasale.WebUI.Areas.Manager.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using static Parasale.WebUI.Helpers.Constants;
+
+namespace Parasale.WebUI.Areas.Manager.ViewComponents
+{
+    public class UserListForManagerViewComponent:ViewComponent
+    {
+        private UserManager<AppUser> _userManager;
+        private IRepositoryWrapper _repository;
+
+        public UserListForManagerViewComponent(UserManager<AppUser> userManager, IRepositoryWrapper repository)
+        {
+            _userManager = userManager;
+            _repository = repository;
+        }
+
+        public async Task<IViewComponentResult> InvokeAsync()
+        {
+            var result = await GetItemsAsync();
+            return View(result);
+        }
+
+        private async Task<List<UserListViewModel>> GetItemsAsync()
+        {
+            var user = await _userManager.FindByNameAsync(User.Identity.Name);
+
+            return _repository.UserRepository.GetUsersByAdmin(user.AssginedAdmin)
+              
+                .Where(p => p.IsManager == false && p.IsCompanyAdmin == false && (string.IsNullOrWhiteSpace(p.AssignedManager) || p.AssignedManager == user.Id))
+                .Select(p => new UserListViewModel()
+                {
+                    Id = p.Id,
+                    Email = p.Email,
+                    Name = p.Name,
+                    Username = p.UserName,
+                    IsAlreadyTeamMember = p.AssignedManager == null ? false : true,
+                    ManagerUserId = p.AssignedManager
+                }).ToList();
+        }
+    }
+}

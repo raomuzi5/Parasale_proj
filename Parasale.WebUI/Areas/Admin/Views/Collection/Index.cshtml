@@ -1,0 +1,83 @@
+﻿
+@{
+    ViewData["Title"] = "Collections";
+}
+
+<div class="row clearfix">
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <div class="card">
+            <div class="header clearfix">
+                <h2 class="float-left"><strong>Collection</strong> Lists</h2>
+                <a id="createbtn" asp-area="Admin" asp-controller="Collection" data-toggle="modal" asp-action="Create" class="btn btn-primary float-right">Add New</a>
+            </div>
+
+            <div class="body table-responsive">
+                @await Component.InvokeAsync("CollectionList")
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts{
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+    <script src="~/lib/BootboxJs/bootbox.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+            $("#txtwelcome").html("View Summary and Manage Objections");
+        });
+
+        $("#createbtn").click(function (e) {
+            e.preventDefault();
+            var url = $("#createbtn").attr('href');
+            $.ajax({
+                url: url,
+                method: "GET"
+            }).done(function (res) {
+                $("#CreateNewModal-label").html("Add New Collection");
+                $("#CreateNewBody").html(res);
+                $.validator.unobtrusive.parse("#CreateNewModal");
+                $("#CreateNewModal").modal();
+            });
+        });
+        $(document).on('click', '#editbtn', function (e) {
+            e.preventDefault();
+            var url = $(this).attr('href');
+            $.ajax({
+                url: url,
+                method: "GET"
+            }).done(function (res) {
+                $("#CreateNewModal-label").html("Edit Collection");
+                $("#CreateNewBody").html(res);
+                $.validator.unobtrusive.parse("#CreateNewModal");
+                $("#CreateNewModal").modal();
+            });
+        });
+        $(document).on('click', '#deletebtn', function (e) {
+            e.preventDefault();
+            var url = $(this).attr('href');
+            bootbox.confirm({
+                message: "Are you Sure You Want To Delete this Record?",
+                closeButton: false, buttons: {
+                    confirm: { label: 'Yes', className: 'btn-info' },
+                    cancel: { label: 'No', className: 'btn-danger' }
+                },
+                callback: function (result) {
+                    if (result) {
+                        $.ajax({ url: url }).done(function (result) {
+                            if (result) {
+
+                                bootbox.alert({
+                                    message: "Record Deleted Successfully!",
+                                    callback: function () { location.reload(); }
+                                });
+                            }
+                        });
+                    }
+                }
+            });
+        });
+    </script>
+}

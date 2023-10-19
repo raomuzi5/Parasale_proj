@@ -1,0 +1,47 @@
+﻿@model IEnumerable<ObjectionViewModel>
+
+@{
+
+}
+
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Add</th>
+                <th>Object</th>
+                <th>Expected Response</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Count() > 0)
+            {
+                int index = 0;
+                foreach (var item in Model)
+                {
+                    index++;
+                    <tr>
+                        <td>
+                            @*<input id="checkisteammember" type="checkbox" data-userId="@user.Id" />*@
+                            <div class="checkbox ctmCheckbox">
+                                <input id="@item.Id" class="usertosendobjection" type="checkbox" data-objectionId="@item.Id" data-managerUserId="@item.ManagerUserId" data-userId="@item.userId">
+                                <label for="@item.Id"></label>
+                            </div>
+                        </td>
+                        <td>@item.ObjectionName</td>
+                        <td>@item.ResponseKeyword</td>
+                    </tr>
+                }
+                <tr>
+                    <td colspan="4"><a id="btnpushobjectiontouser" asp-area="Manager" asp-controller="User" asp-action="PushObjection" class="btn btn-primary">Push</a></td>
+                </tr>
+            }
+            else
+            {
+                <tr>
+                    <td colspan="3" align="center">No Record Found..</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

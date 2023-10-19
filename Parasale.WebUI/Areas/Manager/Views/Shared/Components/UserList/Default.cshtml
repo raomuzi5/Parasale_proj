@@ -1,0 +1,49 @@
+﻿@model IEnumerable<UserListViewModel>
+
+
+<div class="body table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Add</th>
+                <th>Name</th>
+                <th>Username</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Count() > 0)
+            {
+                int index = 0;
+                foreach (var user in Model)
+                {
+                    index++;
+                    <tr>
+                        <td>
+                            @*<input id="checkisteammember" type="checkbox" data-userId="@user.Id" />*@
+                            <div class="checkbox ctmCheckbox">
+                                <input id="@user.Id" class="usertosendobjection" type="checkbox" data-objectionId="@user.objectionId" data-managerUserId="@user.ManagerUserId" data-userId="@user.Id">
+                                <label for="@user.Id"></label>
+                            </div>
+                        </td>
+                        <td>@user.Name</td>
+                        <td>@user.Username</td>
+                        <td>@user.Email</td>
+                    </tr>
+                }
+
+                <tr>
+                    <td colspan="4"><a id="btnpushobjection" asp-area="Manager" asp-controller="User" asp-action="PushObjection" class="btn btn-primary">Push</a></td>
+                </tr>
+
+            }
+            else
+            {
+                <tr>
+                    <td colspan="4" align="center">No Record Found..</td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+</div>

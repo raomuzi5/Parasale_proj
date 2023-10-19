@@ -1,0 +1,986 @@
+﻿@model DashboardIndexViewModel
+
+@{
+    ViewData["Title"] = "Reports";
+    Layout = "~/Areas/Manager/Views/Shared/_Layout.cshtml";
+    var voiceboarding = Model.voiceboarding;
+    var currentSteps = Model.currentStep;
+}
+
+
+@section Styles{
+    <style>
+
+        .highcharts-credits {
+            display: none !important;
+        }
+    </style>
+}
+<div class="row clearfix">
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <div class="card">
+            <div class="header clearfix pb-0">
+                <div class="mainDiv"></div>
+                <button id="autoplay" class="d-none">play</button>
+                <h2 class="float-left"><strong>Reports</strong></h2>
+            </div>
+            <div class="body">
+                <div class="row align-items-center dateAndSwitchRow">
+                    <div class="col-md-6">
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group ">
+                                    <label class="col-form-label ">Start Date</label>
+
+                                    <input class="form-control dates" id="startDate" placeholder="Start Date" />
+
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-form-label ">End Date</label>
+
+                                    <input class="form-control dates" id="endDate" placeholder="End Date" />
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-md-6 text-right">
+                        <div class="PS_checkbox switcher">
+                            <label for="byUser">
+                                <input type="radio" name="byreport" checked id="byUser" value="">
+                                <span><small></small></span>
+                                <small>By User</small>
+                            </label>
+                        </div>
+                        <div class="PS_checkbox switcher">
+                            <label for="byCollection">
+                                <input type="radio" name="byreport" id="byCollection" value="">
+                                <span><small></small></span>
+                                <small>By Collection</small>
+                            </label>
+                        </div>
+                        @*<div class="checkbox inlineblock mr-3">
+                                <input id="byUser" type="checkbox">
+                                <label for="byUser">
+                                    By User
+                                </label>
+                            </div>
+
+                            <div class="checkbox inlineblock mr-3">
+                                <input id="byCollection" type="checkbox">
+                                <label for="byCollection">
+                                    By Collection
+                                </label>
+                            </div>*@
+                    </div>
+                </div>
+                <div class="row clearfix">
+                    <div class="col-lg-12">
+                        <div class="card mb-0 py-3">
+                            <ul class="row profile_state list-unstyled">
+                                <li class="col-lg-3 col-md-3 col-6">
+                                    <div class="body">
+                                        <i class="zmdi zmdi-male col-amber"></i>
+                                        <h4>@Model.TotalActiveUsers</h4>
+                                        <span>Active Users</span>
+                                    </div>
+                                </li>
+                                <li class="col-lg-3 col-md-3 col-6">
+                                    <div class="body">
+                                        <i class="zmdi zmdi-thumb-up col-blue"></i>
+                                        <h4>@string.Format("{0:0.00}", Model.CompletedObjections)%</h4>
+                                        <span>Completed Objections</span>
+                                    </div>
+                                </li>
+                                <li class="col-lg-3 col-md-3 col-6">
+                                    <div class="body">
+                                        <i class="zmdi zmdi-crop-free col-red"></i>
+                                        <h4>@string.Format("{0:0.00}", Model.MissedObjections)%</h4>
+                                        <span>Missed Objections</span>
+                                    </div>
+                                </li>
+                                <li class="col-lg-3 col-md-3 col-6">
+                                    <div class="body">
+                                        <i class="zmdi zmdi-account text-success"></i>
+                                        <h4>@Model.Users</h4>
+                                        <span>Total Users</span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+                        <div class="ReportsNodata nodatadiv text-center nodatadivStyle">
+                            <div class="">
+                                <p>
+                                    Encourage users to practice and reports will appear.
+                                    <i class="zmdi zmdi-help" data-toggle="popover" data-trigger="hover" data-placement="top" title="Help ?" data-content="  Reports will appear when a user has practiced an objection, which falls under a collection,
+                                    Scroll down to collections to set up your first one
+                                    Reports show which objections users got correct and which ones they need to work on."></i>
+                                </p>
+                                @*<img src="~/ThemeStyles/images/NoDataImages/Reports.svg" />*@
+                            </div>
+                            @*<p>No Data Found</p>*@
+                            <p>
+
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <div class="card">
+            <div class="header pb-0 d-flex justify-content-between align-items-center">
+                <div>
+                    <h2><strong>Confidence and Consistency</strong> Score Report <i class="zmdi zmdi-info" data-toggle="popover" data-trigger="hover" data-placement="top" title="Help ?" data-content="This score indicates how prepared a user is to handle these objections in a live meeting. A lower score suggests the user needs more practice, while a higher score suggests the user is ready to perform with confidence and consistency. The score calculation considers pace of speech, coverage of key phrases, and other factors."></i></h2>
+                </div>
+                <div>
+
+
+                </div>
+            </div>
+            <div class="body">
+                <div class="row align-items-center dateAndSwitchRow">
+                    <div class="col-md-6">
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group ">
+                                    <label class="col-form-label ">Start Date</label>
+
+                                    <input class="form-control dates startDate" id="CCSstartDate" placeholder="Start Date" />
+
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group form-row">
+                                    <label class="col-form-label ">End Date</label>
+
+                                    <input class="form-control dates endDate" id="CCSendDate" placeholder="End Date" />
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-md-6 text-right">
+                        @*<button class="btn btn-sm btn-info" id="byCollection" data-toggle="tooltip" data-placement="top" title="Filter Report"><i class="fa fa-filter"></i></button>*@
+                        <div class="PS_checkbox switcher">
+                            <label for="CCSbyObjection">
+                                <input type="radio" name="byCCSreport" checked id="CCSbyObjection" value="">
+                                <span><small></small></span>
+                                <small>By Objection</small>
+                            </label>
+                        </div>
+
+                        <div class="PS_checkbox switcher">
+                            <label for="CCSbyCollection">
+                                <input type="radio" name="byCCSreport" id="CCSbyCollection" value="">
+                                <span><small></small></span>
+                                <small>By Collection</small>
+                            </label>
+                        </div>
+                        <div class="PS_checkbox switcher">
+                            <label for="CCSbyUser">
+                                <input type="radio" name="byCCSreport" id="CCSbyUser" value="">
+                                <span><small></small></span>
+                                <small>By User</small>
+                            </label>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div id="CCScontainer" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <div id="CCSbarcontainer" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+                    </div>
+                    <div class="CAC col-md-12 nodatadiv nodatadivStyle">
+                        <div class="">
+                            <p>
+                                Praise user practice and you will get to see their confidence and consistency grow.
+                                <i class="zmdi zmdi-help" data-toggle="popover" data-trigger="hover" data-placement="top" title="Help ?" data-content="A user has practiced an objection, which falls under a collection. Scroll down to collections to set up your first one. For the definition of confidence and consistency score click the black i icon above."></i>
+
+                            </p>
+                            @*<img src="~/ThemeStyles/images/NoDataImages/Reports.svg" />*@
+                        </div>
+                        @*<p>No Data Found</p>*@
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+
+</div>
+
+
+
+
+@section Scripts{
+    <script>
+        var IsMainJsExist = "";
+        var dbCurrentStep = "@Model.currentStep";
+              $(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+    $("#txtwelcome").html("Reports");
+    });
+    </script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+    <script src="~/lib/BootboxJs/bootbox.min.js"></script>
+    <script src="~/lib/notify.js"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/data.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+    @if (voiceboarding != true)
+    {
+        <script src="~/assets/onboarding/js/voice-onboardingForManager.js"></script>
+    }
+    <script type="text/javascript">
+
+        /*==============CHARTS THINGs==========================*/
+        //var startDate;
+        //var endDate;
+        var startDates;
+        var endDates;
+        var type;
+        //var between = [];
+        $("#startDate").on("blur", function () {
+            // between = [];
+            startDate = $(this).val();
+            endDates = $("#endDate").val();
+            endDate = $("#endDate").val();
+            startDates = $(this).val();
+          //CompareDate();
+
+        });
+        $("#endDate").on("blur", function () {
+            //between = [];
+            endDate = $(this).val();
+            endDates = $(this).val();
+            startDate = $("#startDate").val();
+            startDates = $("#startDate").val();
+             //CompareDate();
+
+        });
+        //function CompareDate() {
+
+        //    if (startDate > endDate) {
+        //        $("#startDate").focus();
+        //        $.notify("Start Date can not be greater then End Date", "error");
+        //        return false;
+        //    }
+        //    if (startDate < endDate) {
+
+        //        $("#endDate").focus();
+        //        $.notify("End Date can not be lesser then Start Date", "error");
+        //        return false;
+        //    }
+
+        //     if ($("#CCSstartDate").val() <  $("#CCSendDate").val()) {
+
+        //        $("#CCSendDate").focus();
+        //        $.notify("End Date can not be lesser then Start Date", "error");
+        //        return false;
+        //    }
+
+        //     if ($("#CCSstartDate").val() >  $("#CCSendDate").val()) {
+
+        //        $("#CCSstartDate").focus();
+        //         $.notify("Start Date can not be greater then End Date", "error");
+        //        return false;
+        //    }
+        //};
+        $("#CCSstartDate").on("blur", function () {
+
+            startDates = $(this).val();
+            endDates = $("#CCSendDate").val();
+            // CompareDate();
+        });
+        $("#CCSendDate").on("blur", function () {
+            endDates = $(this).val();
+            startDates = $("#CCSstartDate").val();
+             //CompareDate();
+        });
+
+
+        $("#CCSbyUser").on("click", function () {
+
+            type = "byUser";
+            initCCS();
+        });
+
+        $("#CCSbyCollection").on("click", function () {
+
+            type = "byCollection";
+            initCCS();
+
+        });
+        $("#CCSbyObjection").on("click", function () {
+            type = "byObjection";
+            initCCS();
+        });
+        $("#byUser").on("click", function () {
+
+            if ($(this).prop("checked")) {
+                init();
+
+            }
+        });
+
+
+        $("#byCollection").on("click", function () {
+            if ($(this).prop("checked")) {
+                startDates = $("#startDate").val();
+                endDates = $("#endDate").val();
+                $.ajax({
+                    type: 'POST',
+                    url: '/Manager/Dashboard/getReportData',
+                    //data: { models: objectionNotification, type: "byUser", startDate: startDates, endDate: endDates },
+                    data: { type: "byCollection", startDate: startDates, endDate: endDates },
+                    ///data: formData,
+                    success: function (response) {
+                            chartsInitial(response.completed, response.completedDates);
+                    },
+                });
+
+            }
+                    });
+
+        function destroyTable() {
+            window.location.reload(true);
+        }
+        var chart;
+        function chartsInitial(data, between) {
+            //var hc_options = {
+            $('#container').highcharts({
+                title: {
+                    text: 'Completed Objection(s)',
+                    x: -20 //center
+                },
+
+                xAxis: {
+
+                    categories: between
+                },
+                yAxis: {
+                    title: {
+                        text: 'Number of Objection(s)'
+                    },
+                    plotLines: [{
+                        value: 0,
+                        width: 1,
+                        color: '#808080'
+                    }]
+                },
+                tooltip: {
+                    valueSuffix: ' Objection(s)'
+                },
+                legend: {
+                    layout: 'vertical',
+                    align: 'right',
+                    verticalAlign: 'middle',
+                    borderWidth: 0
+                },
+                series: data
+            });
+            //chart = new Highcharts.Chart(hc_options);
+        };
+        function CCSchartsInitial(data, between) {
+
+            $('#CCScontainer').highcharts({
+                title: {
+                    text: 'Confidence and Consistency Score (Line Chart)',
+                    x: -20 //center
+                },
+
+                xAxis: {
+
+                    categories: between
+                },
+                yAxis: {
+                    title: {
+                        text: 'Average Score'
+                    },
+                    plotLines: [{
+                        value: 0,
+                        width: 1,
+                        color: '#808080'
+                    }]
+                },
+                tooltip: {
+                    valueSuffix: ' Average Score'
+                },
+                //legend: {
+                //    layout: 'vertical',
+                //    align: 'right',
+                //    verticalAlign: 'middle',
+                //    borderWidth: 0
+                //},
+                series: data
+            });
+        };
+        function CCSbarChartsInit(data, between) {
+            Highcharts.chart('CCSbarcontainer', {
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: 'Confidence and Consistency Score (Bar Chart)'
+                },
+                subtitle: {
+                    text: ''
+                },
+                xAxis: {
+                    categories: between,
+                    crosshair: true
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: 'Average Score'
+                    }
+                },
+
+
+                plotOptions: {
+                    column: {
+                        pointPadding: 0.2,
+                        borderWidth: 0
+                    }
+                },
+                series: data
+            });
+        }
+        function init() {
+            
+            startDates = $("#startDate").val();
+            endDates = $("#endDate").val();
+            //startDate = $("#startDate").val();
+            //endDate = $("#endDate").val();
+            // DateRange();
+            $.ajax({
+                url: "/Manager/Dashboard/getReportData",
+                data: { type: "byUser", startDate: startDates, endDate: endDates },
+                success: function (response) {
+
+                    if (response.completed.length != 0) {
+                        $('#container').show();
+                        $('.ReportsNodata').hide();
+                        chartsInitial(response.completed, response.completedDates);
+                    }
+                    else {
+                        $('#container').hide();
+                        $('.ReportsNodata').show();
+                    }
+                }
+
+            })
+        }
+         function initCCS() {
+
+            $.ajax({
+                url: "/Manager/Dashboard/getCCSReportData",
+                data: { type: type, startDate: startDates, endDate: endDates },
+                success: function (response) {
+
+
+                    if (response.completed.length != 0) {
+                         
+                        CCSchartsInitial(response.completed, response.completedDates);
+                        CCSbarChartsInit(response.completed, response.completedDates);
+                         $('#CCScontainer').show();
+                        $('#CCSbarcontainer').show();
+                        $('.CAC').hide();
+                    }
+                    else {
+                        $('#CCScontainer').hide();
+                        $('#CCSbarcontainer').hide();
+                        $('.CAC').show();
+
+
+                    }
+                }
+
+            });
+        }
+        $(document).ready(function () {
+            @*var cs; var progress;
+            if ('@Model.currentStep' !== null) {
+
+                cs = '@Model.currentStep';
+                 if (cs == '') {
+                     cs = 0;
+
+                }
+                 else {
+
+                    cs = cs.split('=');
+                     cs = parseInt(cs[1]);
+                       $("#getStarted").text('');
+            $("#getStarted").text('Restart');
+                }
+
+               progress = (cs / totalSteps) * 100;
+            progress = Math.floor(progress);
+
+            $(".progress-bar").removeAttr('style');
+            $(".progress-bar").attr('style', 'width:' + progress + '%');
+                $(".progress-bar").html(progress + '%');
+
+
+        }*@
+
+            $(".ttour-shadow").css('display', 'none');
+    //        var btnHtml = '';
+    // btnHtml += '<button id="ppVoice" class="ppVoice btn btn-danger">Pause</button>';
+    //btnHtml += '<button id="skip" class="skip btn btn-light">Save For Later</button>';
+    //        $('.ttour-footer').prepend(btnHtml);
+    //        $(".ppVoice").on("click", function () {
+
+    //            if ($(this).text() === "Play") {
+    //                $(this).text("Pause");
+    //                synth.resume();
+    //            }
+    //            else {
+    //                $(this).text("Play");
+    //                synth.pause();
+    //            }
+    //        });
+    //              $(".skip").on("click", function () {
+    //            var Urlpath = window.location.href;
+    //            $.ajax({
+    //                url: '/Speech/SaveLater/',
+    //                data: { Urlpath:Urlpath, currentStep: currentStep },
+    //                success: function (res) {
+    //                    $.notify("Successfully saved for later", 'success');
+    //                }
+    //            });
+    //        });
+            var today = new Date();
+            $("#startDate").datetimepicker({
+                format: "YYYY-MM-DD"
+            });
+            $("#endDate").datetimepicker({
+                format: "YYYY-MM-DD",
+                maxDate: today
+            });
+            $("#CCSstartDate").datetimepicker({
+                format: "YYYY-MM-DD"
+            });
+            $("#CCSendDate").datetimepicker({
+                format: "YYYY-MM-DD",
+                maxDate: today
+            });
+            var st = '@(DateTime.Now.AddDays(-5).ToShortDateString())';
+            var sst = new Date(st);
+ var sdays = sst.getDate();
+            var scurr_month = sst.getMonth() + 1;
+            var scurr_year = sst.getFullYear();
+            var starts = scurr_year + "-" + scurr_month + "-" + sdays;
+            $("#startDate").val(starts);
+            $("#CCSstartDate").val(starts);
+             startDates = $("#startDate").val();
+            endDates = $("#endDate").val();
+            startDate = $("#startDate").val();
+            endDate = $("#endDate").val();
+            $("#CCSendDate").val(endDates);
+
+            init();
+             type = "byObjection";
+            initCCS();
+        });
+
+
+
+        //$(document).on('change', '.generateReport', function () {
+        //    var control = $(this);
+        //    var isTeamMember = control.is(':checked');
+        //    var userId = control.attr('data-userId');
+        //    if (isTeamMember) {
+        //        objectionNotification.push(
+        //            userId
+        //        );
+        //    }
+        //    else {
+        //        $.each(objectionNotification, function (i) {
+        //            if (objectionNotification[i].userId === userId) {
+        //                objectionNotification.splice(i, 1);
+        //                return false;
+        //            }
+        //        });
+        //
+        //});
+        //$(document).on("click", "#btnGenerateReport", function () {
+
+        //    var formData = new FormData();
+        //    formData.append("models", objectionNotification);
+        //    formData.append("type", "byUser");
+        //    formData.append("startDate", startDates);
+        //    formData.append("endDate", endDates);
+        //    $("#CreateNewModal").modal('hide');
+        //    $.ajax({
+
+        //        type: 'POST',
+        //        processData: false,
+        //        contentType: false,
+        //        url: '/Manager/Dashboard/GetSelectedData',
+        //        //data: { models: objectionNotification, type: "byUser", startDate: startDates, endDate: endDates },
+        //        data: formData,
+        //        success: function (response) {
+
+        //            chartsInitial(response.completed, response.completedDates);
+        //        },
+        //    });
+        //});
+
+        //$(document).on("click", "#btnCollectionGenerateReport", function () {
+
+        //    var formData = new FormData();
+        //    formData.append("models", objectionNotification);
+        //    formData.append("type", "byCollection");
+        //    formData.append("startDate", startDates);
+        //    formData.append("endDate", endDates);
+        //    $("#CreateNewModal").modal('hide');
+        //    $.ajax({
+
+        //        type: 'POST',
+        //        processData: false,
+        //        contentType: false,
+        //        url: '/Manager/Dashboard/GetSelectedData',
+        //        //data: { models: objectionNotification, type: "byUser", startDate: startDates, endDate: endDates },
+        //        data: formData,
+        //        success: function (response) {
+
+        //            chartsInitial(response.completed, response.completedDates);
+        //        },
+        //    });
+        //});
+        //$(document).on("click", "#checkAll", function () {
+        //    $('input:checkbox').not(this).prop('checked', this.checked);
+        //    objectionNotification = [];
+        //    $('input.generateReport:checkbox:checked').each(function () {
+        //        var sThisVal = $(this).attr('data-userId');
+        //        objectionNotification.push(sThisVal);
+        //    });
+        //});
+        /*=====================================================*/
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+
+            $("#txtwelcome").html("View Summary and Manage Objections List");
+        });
+
+
+        var objectionNotification = [];
+
+        $("#CreateNewModal").on('hidden.bs.modal', function () {
+            objectionNotification = [];
+        });
+
+        $(document).on('click', '#btnpushobjection', function (e) {
+            e.preventDefault();
+            if (objectionNotification.length > 0) {
+                var url = $(this).attr('href');
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: { models: objectionNotification }
+                }).done(function (res) {
+                    if (res) {
+                        $.notify("Objection Pushed to Selected User", "success");
+                        $('#CreateNewModal').modal('toggle');
+                    }
+                });
+            }
+            else {
+                $.notify("Please Select Atleast 1 User", "warn");
+            }
+
+        });
+
+        $(document).on('change', '.usertosendobjection', function () {
+            var control = $(this);
+            var isTeamMember = control.is(':checked');
+            var userId = control.attr('data-userId');
+            var objectionId = control.attr('data-objectionId');
+            var managerUserId = control.attr('data-managerUserId');
+            if (isTeamMember) {
+                objectionNotification.push({
+                    PushedByUserId: managerUserId,
+                    PushedToUserId: userId,
+                    ObjectionId: objectionId
+                });
+            }
+            else {
+                $.each(objectionNotification, function (i) {
+                    if (objectionNotification[i].PushedByUserId === managerUserId && objectionNotification[i].PushedToUserId === userId && objectionNotification[i].ObjectionId === objectionId) {
+                        objectionNotification.splice(i, 1);
+                        return false;
+                    }
+                });
+            }
+        });
+
+        $(document).on('click', '#btnpushobjectiontousers', function (e) {
+            e.preventDefault();
+            var url = $(this).attr('href');
+            $.ajax({
+                url: url,
+                method: "GET"
+            }).done(function (res) {
+                $("#CreateNewModal-label").html("Users List");
+                $("#CreateNewBody").html(res);
+                $("#CreateNewModal").modal();
+            });
+        });
+
+
+        $("#createbtn").click(function (e) {
+            e.preventDefault();
+            var url = $("#createbtn").attr('href');
+            $.ajax({
+                url: url,
+                method: "GET"
+            }).done(function (res) {
+                $("#CreateNewModal-label").html("Add New Collection");
+                $("#CreateNewBody").html(res);
+                $.validator.unobtrusive.parse("#CreateNewModal");
+                $("#CreateNewModal").modal();
+            });
+        });
+        $(document).on('click', '#editbtn', function (e) {
+            e.preventDefault();
+            var url = $(this).attr('href');
+            $.ajax({
+                url: url,
+                method: "GET"
+            }).done(function (res) {
+                $("#CreateNewModal-label").html("Edit");
+                $("#CreateNewBody").html(res);
+                $.validator.unobtrusive.parse("#CreateNewModal");
+                $("#CreateNewModal").modal();
+            });
+        });
+        var collectionName;
+        $(document).on('click', '#viewbtn', function (e) {
+            e.preventDefault();
+            collectionName = $(this).attr('data-collectionname');
+            var url = $(this).attr('href');
+            $.ajax({
+                url: url,
+                method: "GET"
+            }).done(function (res) {
+                $("#CreateNewModal-label").html("Objection(s) in <strong>" +collectionName+"</strong>");
+                $("#CreateNewBody").html(res);
+                $.validator.unobtrusive.parse("#CreateNewModal");
+                $("#CreateNewModal").modal();
+            });
+        });
+        $(document).on('click', '#deletebtn', function (e) {
+            e.preventDefault();
+            var url = $(this).attr('href');
+            bootbox.confirm({
+                message: "Are you Sure You Want To Delete this Record?",
+                closeButton: false, buttons: {
+                    confirm: { label: 'Yes', className: 'btn-info' },
+                    cancel: { label: 'No', className: 'btn-danger' }
+                },
+                callback: function (result) {
+                    if (result) {
+                        $.ajax({ url: url }).done(function (result) {
+                            if (result) {
+                                //$.notify("Data Deleted Successfully", "success");
+                                //sleep(4000);
+                                bootbox.alert({
+                                    message: "Record Deleted Successfully!",
+                                    callback: function () { location.reload(); }
+                                });
+                            }
+                        });
+                    }
+                }
+            });
+        });
+
+        $(document).on('click', '#btnPushMissedObjectionsToUser', function (e) {
+            e.preventDefault();
+            var control = $(this);
+            var url = control.attr('href');
+            var username = control.attr('data-username');
+            $.ajax({
+                url: url,
+                type: "GET",
+                data: { username: username }
+            }).done(function (res) {
+                if (res) {
+                    $.notify("User notified successfully", "success");
+                    location.reload();
+                }
+            });
+        });
+        $(document).on('click', "#createbtn1", function (e) {
+            e.preventDefault();
+            var url = $(this).attr('href');
+            $.ajax({
+                url: url,
+                method: "GET"
+            }).done(function (res) {
+                $("#CreateNewModal-label").html("Add New Objection");
+                $("#CreateNewBody").html(res);
+                $.validator.unobtrusive.parse("#CreateNewModal");
+                $("#CreateNewModal").modal();
+            });
+        });
+        $(function () {
+            var model = $("#checkModel").attr('data-checkmodel');
+            if (model === "0") {
+                $("#usersmissedobjectionsdiv").hide();
+            }
+        });
+        $(document).on('click', '#btnMGAddObjection', function (e) {
+
+            e.preventDefault();
+
+            var frm = $('#frmMGAddObjection');
+            if (frm.valid()) {
+
+                var ResponseKeyword = $("#ResponseKeyword").val();
+
+                var objectionName = $("#ObjectionName").val();
+             var collectionId = $("#collectionId option:selected").val();
+                       $.ajax({
+                    type: "POST",
+                           url: '/Manager/Dashboard/AddObjection',
+                             data: { objectionName: objectionName, ResponseKeyword: ResponseKeyword, collectionId: collectionId },
+                      //data: frm.serialize(),
+
+                    success: function (response) {
+                        $("#frmMGAddObjection").trigger('reset');
+                        $.notify("Objection has been saved successfully", "success");
+                    },
+                });
+            }
+
+        });
+
+     //function LoadPopUp() {
+     //       $("#CreateNewModal-label").html("Voice onboarding");
+     //           var html = '';
+     //         html += '<div class="row">';
+     //         html += '<div class="col-md-12 mb-3"><div class="progress"><div class="progress-bar" role="progressbar" style="width: 1%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div></div></div>';
+     //    html += '<div class="col-md-12">';
+     //    html += '<span> Estimated Completion Time 30-45 minutes.</span><br>';
+     //           html += '<span> Click the button to get started with demo.</span><br>';
+
+     //           html += '<div class="text-right"><button class="btn btn-primary btn-sm" id="getStarted">Get Started</button></div>';
+
+     //           html += '</div>';
+     //           html += '</div>';
+     //                   $("#CreateNewBody").html(html);
+
+     //                   $("#CreateNewModal").modal('show');
+     //       }
+
+
+        function LoadPopUp() {
+            $("#CreateNewModal-label").html("Voice onboarding");
+            var html = '';
+            html += '<div class="row">';
+            html += '<div class="col-md-12 text-center">';
+            		html += '<span class="text-danger">Please ensure your speakers are on.<br>Test your microphone, please say a few words.</span>';
+
+            html += '</div>';
+             html += '<div class="text-boxs" contenteditable="false"></div>';
+            html += '<div class="col-md-12 mb-3"><div class="progress"><div class="progress-bar" role="progressbar" style="width: 1%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div></div></div>';
+            html += '<div class="col-md-12">';
+            html += '<span> Estimated Completion Time: <b>30-45 minutes.</b></span><br>';
+
+            html += '<span> Click the button to get started with demo.</span><br>';
+
+            html += '<div class="text-right" id="htmlAppend"><button class="btn btn-primary btn-sm" style="margin-right: 5px;" id="getStarted">Get Started</button>';
+            html += '</div>';
+            html += '</div>';
+            html += '</div>';
+            $("#CreateNewBody").html(html);
+            $("#CreateNewModal").modal('show');
+
+        }
+    </script>
+    <script>
+        function micPermission() {
+            $("#CreateNewModal-label").html("Mic Permission");
+            var htm = '';
+            htm = '<div class="row"><div class="col-md-12 text-center"><span class="text-danger">Click on Allow to continue.</span></div><div class="text-right col-md-12"><button class="btn btn-danger btn-sm mr-2" id="cancelPermission">Cancel</button><button class="btn btn-primary btn-sm" id="grantPermission"> Grant Permission</button></div></div>';
+            // htm = '<div class="row"><div class="col-md-12 text-center"><span><i class="fa fa-microphone"></i></span><span class="text-danger">Parasale wants to use your microphone.</span></div><div class="text-right><button class="btn btn-danger btn-sm" id="cancelPermission">Cancel</button><button class="btn btn-primary btn-sm" style = "margin-right: 5px;" id = "grantPermission"> Grant Permission</button></div></div>';
+            $("#CreateNewBody").html(htm);
+            $("#CreateNewModal").modal('show');
+        };
+    </script>
+    @if (voiceboarding != true)
+    {
+        <script>
+            var isGranted = getSessionStorageValue("isGranted");
+
+            if (isGranted == null) {
+                micPermission();
+            }
+            else {
+                LoadPopUp();
+
+            }
+            //  setTimeout(function () {
+            //    var isGranted = readGrantCookie("isGranted");
+            //    if (isGranted == null) {
+            //        micPermission();
+            //    }
+            //},200)
+
+            //LoadPopUp();
+            //var paragraphs = document.createElement('p');
+            //var containers = document.querySelector('.text-boxs');
+            //containers.appendChild(paragraphs);
+            //dictates();
+            //recognition.start();
+        </script>
+    }
+
+    @if (currentSteps != null)
+    {
+        <script>
+             cs = '@currentSteps';
+            //cs = cs.split('=');
+            //cs = parseInt(cs[1]);
+            cs = parseInt(cs);
+           var   htmlf = '<button class="btn btn-info btn-sm" id="continueWhereLeft">Countinue where I left</button><div class="text-center"><span>Step where you left onboarding: <strong>' + cs + '</strong></span></div>';
+            $("#htmlAppend").append(htmlf);
+                     $(document).on("click", "#continueWhereLeft", function () {
+                    $(".ttour-shadow").css('display', 'block');
+                    checkSteps();
+                    voiceOnboarding(datas);
+                    $("#CreateNewModal").modal('hide');
+
+                });
+        </script>
+
+    }
+}
+

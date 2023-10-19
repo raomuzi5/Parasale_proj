@@ -1,0 +1,78 @@
+﻿@model ForReportDataViewModel
+
+<div class="body table-responsive">
+    <table class="table" id="selectTable">
+        <thead>
+            <tr>
+                <th>
+                    <div class="checkbox ctmCheckbox mr-3">
+                        <input id="checkAll" class="checkisteammember generateReport" type="checkbox" data-userId="checkAll">
+                        <label for="checkAll">Select</label>
+                    </div>
+                </th>
+                <th>Name</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.type == "byUser")
+            {
+                @if (Model.appUserList != null && Model.appUserList.Count() > 0)
+                {
+                    int index = 0;
+                    foreach (var user in Model.appUserList)
+                    {
+                        index++;
+                        <tr>
+                            <td>
+                                <div class="checkbox ctmCheckbox">
+                                    <input id="@user.Id" class="checkisteammember generateReport" type="checkbox" data-userId="@user.Id">
+                                    <label for="@user.Id"></label>
+                                </div>
+                            </td>
+                            <td>@user.Name</td>
+
+                        </tr>
+                    }
+
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="4" align="center">No Record Found..</td>
+                    </tr>
+                }
+            }
+
+            @if (Model.type == "byCollection")
+            {
+                @if (Model.collectionList != null && Model.collectionList.Count() > 0)
+                {
+                    int index = 0;
+                    foreach (var collection in Model.collectionList)
+                    {
+                        index++;
+                        <tr>
+                            <td>
+                                <div class="checkbox ctmCheckbox">
+                                    <input id="@collection.Id" class="checkisteammember generateReport" type="checkbox" data-userId="@collection.Id">
+                                    <label for="@collection.Id"></label>
+                                </div>
+                            </td>
+                            <td>@collection.CollectionName</td>
+
+                        </tr>
+                    }
+                 
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="4" align="center">No Record Found..</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+    <a id="btnCollectionGenerateReport" class="btn btn-primary text-white">Get Report</a>
+</div>

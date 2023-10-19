@@ -1,0 +1,65 @@
+﻿
+@{
+    ViewData["Title"] = "Reset Account";
+    Layout = "~/Areas/Manager/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-12 mt-5">
+        <div class="card">
+            <div class="body py-5">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <h6>
+                            Clicking this button will reset your account.
+                            All data except your login and password will be erased.
+                        </h6>
+                    </div>
+                    <div class="col-md-6 text-right">
+                        <button id="resetData" class="btn btn-danger ">Reset Account</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/lib/BootboxJs/bootbox.min.js"></script>
+    <script src="~/lib/notify.js"></script>
+    <script src="~/lib/HoldOn.js-master/src/js/HoldOn.js"></script>
+    <script>
+              $(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+    $("#txtwelcome").html("Reset Account");
+    });
+        $(document).on('click', '#resetData', function (e) {
+
+            e.preventDefault();
+            var url = '/Manager/Dashboard/DeleteAllData';
+            bootbox.confirm({
+                message: "Are you Sure You Want To Delete All Data?",
+                closeButton: false, buttons: {
+                    confirm: { label: 'Yes', className: 'btn-info' },
+                    cancel: { label: 'No', className: 'btn-danger' }
+                },
+                callback: function (result) {
+                    if (result) {
+                        $.ajax({ url: url, type: 'POST' }).done(function (result) {
+                            if (result) {
+                                bootbox.alert({
+                                    message: "Data Deleted Successfully!",
+                                    callback: function () {
+                                        //$.notif("Account has been reset successfully.","success")
+                                    }
+                                });
+                            }
+                        });
+                    }
+                }
+            });
+        });
+
+    </script>
+}
+

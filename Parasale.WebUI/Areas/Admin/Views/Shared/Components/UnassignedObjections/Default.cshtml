@@ -1,0 +1,54 @@
+﻿@model Parasale.WebUI.Areas.Admin.Models.UnAssignedViewModel
+@{
+
+}
+
+@if (Model != null && Model.objectionViewModels.Count() > 0)
+{
+    <div class="form-group">
+        <label asp-for="collectionId" class="control-label"></label>
+        @Html.DropDownListFor(model => model.collectionId, Model.collections, "Select Collection", new { @class = "form-control" })
+        <span asp-validation-for="collectionId" class="text-danger"></span>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Add</th>
+                    <th>Objection</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int index = 0;
+                    foreach (var item in Model.objectionViewModels)
+                    {
+                        index++;
+                        <tr>
+                            <td>
+                                <div class="checkbox ctmCheckbox">
+                                    <input id="@item.Id" class="usertosendobjection" type="checkbox" data-objectionId="@item.Id" data-managerUserId="" data-userId="">
+                                    <label for="@item.Id"></label>
+                                </div>
+                            </td>
+                            <td>@item.ObjectionName</td>
+
+                        </tr>
+                    }
+
+                }
+
+            </tbody>
+        </table>
+    </div>
+
+    <a id="btnpushobjectiontouser" asp-area="Admin" asp-controller="Collection" asp-action="PushObjectionsToCollection" class="btn btn-primary">Push to Collection</a>
+}
+
+else
+{
+    <div>
+        <span>No Record Found.</span>
+    </div>
+}

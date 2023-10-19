@@ -1,0 +1,265 @@
+﻿@model ManageCollectionsViewModel;
+@{
+
+    ViewData["Title"] = "Collections";
+    Layout = "~/Areas/Manager/Views/Shared/_Layout.cshtml";
+    var voiceboarding = Model.voiceBoarding;
+    var currentSteps = Model.currentStep;
+
+    var UserID = Model.userId;
+    var UserName = Model.userName;
+    var path = Model.path;
+}
+
+<div class="row clearfix">
+
+    <div class="col-sm-12 col-md-12 col-lg-12 collectionThings">
+        <div class="card">
+            <div class="header d-flex align-items-center justify-content-between pb-0">
+                <h2><strong>Collections</strong> List</h2>
+                <a id="createbtn" asp-area="Manager" asp-controller="Collection" data-toggle="modal" asp-action="Create" class="btn btn-primary btn-sm addnewCollections">Add New</a>
+                @*<a id="createbtn" asp-area="Manager" asp-controller="Dashboard" data-toggle="modal" asp-action="AddObjection" class="btn btn-primary float-right">Add New</a>*@
+            </div>
+            <div class="body ">
+                <div class="table-responsive">
+                    @if (Model.collections != null && Model.collections.Count() > 0)
+                    {
+                        <table class="table table-striped table-borderless table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Sr.</th>
+                                    <th>Collections</th>
+
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.collections != null && Model.collections.Count() > 0)
+                                {
+                                    int index = 0;
+                                    foreach (var collection in Model.collections)
+                                    {
+                                        index++;
+                                        <tr>
+                                            <td>@index</td>
+                                            <td>@collection.CollectionName</td>
+
+                                            <td>
+                                                <a id="editbtn" data-toggle="tooltip" data-placement="top" title="Edit Collection" asp-area="Manager" asp-controller="Collection" asp-action="Edit" asp-route-id="@collection.Id" class="m-0 btn btn-info btn-xs editbtn"><span class="zmdi zmdi-edit"></span></a>
+                                                <a id="deletebtn" data-toggle="tooltip" data-placement="top" title="Delete Collection" asp-area="Manager" asp-controller="Collection" asp-action="Delete" asp-route-id="@collection.Id" class=" m-0 btn btn-danger btn-xs"><span class="zmdi zmdi-delete"></span></a>
+                                                <a id="viewbtn" data-collectionname="@collection.CollectionName" data-toggle="tooltip" data-placement="top" title="View Objections" asp-area="Manager" asp-controller="Dashboard" asp-action="GetObjectionsByCollection" asp-route-id="@collection.Id" class="m-0 btn btn-success btn-xs viewbtn"><span class="zmdi zmdi-eye"></span></a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+
+
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <div class="col-md-12 text-center nodatadivStyle">
+                            <div class="Para-icon-hover">
+                                <p>
+                                    Create collections and objections to allow users to start practicing.
+                                    <i class="zmdi zmdi-help" data-toggle="popover" data-trigger="hover" data-placement="left" title="Help ?" data-content=" You have made it to collections, which pull data for the above reports and confidence and consistency score
+
+                                    In order to allow users to practice you must first create a collection, which will hold objections for them to practice. Common collections include: Pricing objections, competition objections, common objections, etc. Click add new now to create a collection.
+
+                                    Now you must create an objection. Click the green eye icon under your new collection you just created to add your first objection. Common objections include: Your price is to high, we use your competitor, etc.
+
+                                    Congratulations!! you are now ready to practice. Go to practice objections in order to do so, or to assign a collection to a user go to the users tab."></i>
+                                </p>
+                                @*<img src="~/ThemeStyles/images/NoDataImages/Collection.svg" />*@
+                            </div>
+                            @*<p>No Data Found</p>*@
+                        </div>
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row clearfix">
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <div class="card">
+            <div class="header d-flex justify-content-between align-items-center pb-0">
+                <h2><strong>Quick Start</strong> Collections</h2>
+            </div>
+            <button id="autoplay" class="d-none">play</button>
+            <div class="body table-responsive">
+                @if (Model.QuickCollection != null && Model.QuickCollection != null && Model.QuickCollection.Count() > 0)
+                {
+                    <table class="table table-hover table-striped table-borderless">
+                        <thead>
+                            <tr>
+                                <th>Sr.</th>
+                                <th>Collections</th>
+
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.QuickCollection != null && Model != null && Model.QuickCollection.Count() > 0)
+                            {
+                                int index = 0;
+                                foreach (var collection in Model.QuickCollection.OrderByDescending(o => o.QuickStart))
+                                {
+                                    index++;
+                                    <tr>
+                                        <td>@index</td>
+                                        <td>@collection.CollectionName</td>
+
+                                        <td>
+                                            <a id="addCollection" data-toggle="tooltip" data-placement="top" title="Move to My Collections" asp-area="Manager" asp-controller="Dashboard" asp-action="MoveToMyCollections" asp-route-id="@collection.Id" class="m-0 btn btn-info btn-xs addCollections"><span class="zmdi zmdi-arrow-right addCollections"></span></a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+
+
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <div class="col-md-12 text-center nodatadivStyle">
+                        <div class="ND_Img_Wrap">
+                            <p>There is no quick collection</p>
+                            @*<img src="~/ThemeStyles/images/NoDataImages/Quick start.svg" />*@
+                        </div>
+
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <script>
+        var IsMainJsExist = "";
+        var dbCurrentStep = "@Model.currentStep";
+              $(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+    $("#txtwelcome").html("Manage Collections");
+    });
+    </script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+    <script src="~/lib/BootboxJs/bootbox.min.js"></script>
+    <script src="~/lib/notify.js"></script>
+    <script>
+        $("#createbtn").click(function (e) {
+            e.preventDefault();
+            var url = $("#createbtn").attr('href');
+            $.ajax({
+                url: url,
+                method: "GET"
+            }).done(function (res) {
+                $("#CreateNewModal-label").html("Add New Collection");
+                $("#CreateNewBody").html(res);
+                $.validator.unobtrusive.parse("#CreateNewModal");
+                $("#CreateNewModal").modal();
+            });
+        });
+        $(document).on('click', '#editbtn', function (e) {
+            e.preventDefault();
+            var url = $(this).attr('href');
+            $.ajax({
+                url: url,
+                method: "GET"
+            }).done(function (res) {
+                $("#CreateNewModal-label").html("Edit");
+                $("#CreateNewBody").html(res);
+                $.validator.unobtrusive.parse("#CreateNewModal");
+                $("#CreateNewModal").modal();
+            });
+        });
+        var collectionName;
+        $(document).on('click', '#viewbtn', function (e) {
+            e.preventDefault();
+            collectionName = $(this).attr('data-collectionname');
+            var url = $(this).attr('href');
+            $.ajax({
+                url: url,
+                method: "GET"
+            }).done(function (res) {
+                $("#CreateNewModal-label").html("Objection(s) in <strong>" + collectionName + "</strong>");
+                $("#CreateNewBody").html(res);
+                $.validator.unobtrusive.parse("#CreateNewModal");
+                $("#CreateNewModal").modal();
+            });
+        });
+        $(document).on('click', '#deletebtn', function (e) {
+
+            e.preventDefault();
+            var url = $(this).attr('href');
+            bootbox.confirm({
+                message: "Are you Sure You Want To Delete this Record?",
+                closeButton: false, buttons: {
+                    confirm: { label: 'Yes', className: 'btn-info' },
+                    cancel: { label: 'No', className: 'btn-danger' }
+                },
+                callback: function (result) {
+                    if (result) {
+                        $.ajax({ url: url }).done(function (result) {
+
+                            if (result) {
+
+                                //$.notify("Data Deleted Successfully", "success");
+                                //sleep(4000);
+                                bootbox.alert({
+                                    message: "Record Deleted Successfully!",
+
+                                    callback: function () {
+
+                                        location.reload();
+                                    }
+                                });
+                            }
+                        });
+                    }
+                }
+            });
+        });
+        $(document).on('click', "#createbtn1", function (e) {
+            e.preventDefault();
+            var url = $(this).attr('href');
+            $.ajax({
+                url: url,
+                method: "GET"
+            }).done(function (res) {
+                $("#CreateNewModal-label").html("Add New Objection");
+                $("#CreateNewBody").html(res);
+                $.validator.unobtrusive.parse("#CreateNewModal");
+                $("#CreateNewModal").modal();
+            });
+        });
+        $(document).on("click", ".addCollections", function (e) {
+            e.preventDefault();
+            var id = $(this).attr('data-id');
+            $.ajax({
+                url: '/Manager/Dashboard/MoveToMyCollections/',
+                data: { id: id },
+                success: function (res) {
+                    setTimeout(function () {
+                        location.reload(true);
+                    }, 1000);
+                    //$.ajax({
+                    //    url: '/Manager/Dashboard/ManagerCollections/',
+                    //    data: { after: "after" },
+                    //    success: function (response) {
+
+                    //        $("#colPage").empty().html(response);
+
+                    //    }
+                    //});
+                }
+            });
+        });
+    </script>
+}

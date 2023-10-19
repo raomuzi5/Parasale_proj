@@ -1,0 +1,134 @@
+﻿@model IEnumerable<Parasale.Models.AuditLog>
+
+@{
+    ViewData["Title"] = "Audit Logs";
+    var voiceboarding = ViewBag.voiceboarding;
+}
+
+@section Styles{
+    <style>
+        .ctm-Spinner {
+            position: relative;
+            width: 125px;
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+
+        .checkbox label {
+            position: absolute;
+        }
+    </style>
+    <link href="~/lib/HoldOn.js-master/src/css/HoldOn.css" rel="stylesheet" />
+}
+<style>
+    .bootbox.modal .modal-footer {
+        justify-content: flex-end;
+    }
+</style>
+
+<div class="row clearfix">
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <div class="card">
+            <button id="autoplay" class="d-none">play</button>
+            <div class="header d-flex align-items-center justify-content-between pb-0">
+                <h2><strong>Audit</strong> Logs</h2>
+                @*<a asp-area="Admin" asp-controller="User" asp-action="GetLog" class="btn btn-primary m-0 btn-sm GetLogModal" data-toggle="modal" data-target="#CreateUserList" >Add New</a>*@
+            </div>
+            <div class="body ">
+                @if (Model != null && Model.Count() > 0)
+                {
+                    <table class="table table-hover table-striped LogTable js-basic-example table-borderless">
+                        <thead>
+                            <tr>
+                                <th>Sr.</th>
+                                <th>Type</th>
+                                <th>Details</th>
+                                <th>Previous Data</th>
+                                <th>New Data</th>
+                                <th>Modified By</th>
+                                <th>Modified Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.Count() > 0)
+                            {
+                                int index = 0;
+                                foreach (var log in Model)
+                                {
+                                    index++;
+                                    <tr>
+                                        <td>@index</td>
+                                        <td>@log.Type</td>
+                                        <td>@log.Field</td>
+                                        <td>@log.PreviousData</td>
+                                        <td>@log.NewData</td>
+                                        <td>@log.ModifiedBy</td>
+                                        <td>@log.ModifiedDate</td>
+
+                                    </tr>
+                                }
+                            }
+
+
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <div class="col-md-12 text-center nodatadivStyle">
+                        <div class="">
+                            <p>No Data in Audit Log</p>
+                            @*<img src="~/ThemeStyles/images/NoDataImages/AuditLogs.svg" />*@
+                        </div>
+
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts{
+    <script>
+        var IsMainJsExist = "";
+    </script>
+    @if (voiceboarding != true)
+    {
+        <script src="~/assets/onboarding/js/voice-onboarding.js"></script>
+    }
+    <script>
+        $(document).ready(function () {
+            //var btnHtml = '';
+            //btnHtml += '<button id="ppVoice" class="ppVoice btn btn-danger">Pause</button>';
+            //btnHtml += '<button id="skip" class="skip btn btn-light">Save For Later</button>';
+            //$('.ttour-footer').prepend(btnHtml);
+            //$(".skip").on("click", function () {
+            //    var Urlpath = window.location.href;
+            //    $.ajax({
+
+            //        url: '/Speech/SaveLater/',
+            //        data: { Urlpath: Urlpath, currentStep: currentStep },
+            //        success: function (res) {
+            //            $.notify("Successfully saved for later", 'success');
+            //        }
+            //    });
+            //});
+            //$(".ppVoice").on("click", function () {
+
+            //    if ($(this).text() === "Play") {
+            //        $(this).text("Pause");
+            //        synth.resume();
+            //    }
+            //    else {
+            //        $(this).text("Play");
+            //        synth.pause();
+            //    }
+            //});
+
+        });
+        $('.js-basic-example').Datatable({})
+    </script>
+}

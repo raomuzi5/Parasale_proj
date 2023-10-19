@@ -1,0 +1,304 @@
+﻿
+@{
+    ViewData["Title"] = "Reports";
+}
+
+<style>
+    #container {
+        height: 400px;
+    }
+
+    .highcharts-figure, .highcharts-data-table table {
+        min-width: 310px;
+        max-width: 800px;
+        margin: 1em auto;
+    }
+
+    #datatable {
+        font-family: Verdana, sans-serif;
+        border-collapse: collapse;
+        border: 1px solid #EBEBEB;
+        margin: 10px auto;
+        text-align: center;
+        width: 100%;
+        max-width: 500px;
+    }
+
+        #datatable caption {
+            padding: 1em 0;
+            font-size: 1.2em;
+            color: #555;
+        }
+
+        #datatable th {
+            font-weight: 600;
+            padding: 0.5em;
+        }
+
+        #datatable td, #datatable th, #datatable caption {
+            padding: 0.5em;
+        }
+
+        #datatable thead tr, #datatable tr:nth-child(even) {
+            background: #f8f8f8;
+        }
+
+        #datatable tr:hover {
+            background: #f1f7ff;
+        }
+
+    .highcharts-credits {
+        display: none !important;
+    }
+
+    .highcharts-button highcharts-contextbutton .highcharts-button {
+        display: none !important;
+    }
+</style>
+<div class="row clearfix">
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <div class="card">
+            <div class="header clearfix">
+                <h2 class="float-left"><strong>View</strong> Reports</h2>
+            </div>
+            <div class="body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label">Start Date</label>
+                                    <input class="form-control dates" id="startDate" placeholder="Start Date" />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label">End Date</label>
+                                    <input class="form-control dates" id="endDate" placeholder="End Date" />
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <div class="checkbox inlineblock mr-3">
+                            <input id="byUser" type="checkbox">
+                            <label for="byUser">
+                                By User
+                            </label>
+                        </div>
+                        <div class="checkbox inlineblock mr-3">
+                            <input id="byManager" type="checkbox">
+                            <label for="byManager">
+                                By Manager
+                            </label>
+                        </div>
+                        <div class="checkbox inlineblock mr-3">
+                            <input id="byCollection" type="checkbox">
+                            <label for="byCollection">
+                                By Collection
+                            </label>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <figure class="highcharts-figure">
+                            <div id="container"></div>
+                            <div class="dataTables" style="display:none"> </div>
+                            <table id="datatable" style="visibility:hidden;opacity:0;position:fixed;left:-5000px;">
+                                <thead>
+                                    <tr class="tHeader">
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="completed">
+                                        <th>Completed Objection</th>
+
+                                    </tr>
+
+                                    <tr class="Incompleted">
+
+                                        <th>Incomplete Objections</th>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </figure>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/data.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+    <script>
+        $(document).ready(function () {
+            var today = new Date();
+            $("#startDate").datetimepicker({
+                format: "YYYY-MM-DD"
+
+            });
+            $("#endDate").datetimepicker({
+                format: "YYYY-MM-DD",
+                maxDate: today
+            });
+            var twoDaysAgo = today.getDate() - 5;  //change day here
+            var curr_month = today.getMonth()+1;
+            var curr_year = today.getFullYear();
+            var x = curr_year + "-" + curr_month + "-" + twoDaysAgo;
+            $("#startDate").val(x);
+
+        });
+        var chart = "";
+        var html = "";
+        var htmlCCount = "";
+        var startDate;
+        var endDate;
+        var htmlICount = "";
+
+        $("#byUser").on("click", function () {
+            if ($(this).prop("checked")) {
+                startDate = $("#startDate").val();
+                endDate = $("#endDate").val();
+                $.ajax({
+                    url: '/Admin/Dashboard/getReportData',
+                    data: { type: "byUser", startDate: startDate, endDate: endDate },
+                    success: function (response) {
+
+                        $.each(response.completed, function (i, key) {
+                            html += '<th>' + i + '</th>';
+                            htmlCCount += '<td>' + key + '</td>'
+                        });
+
+                        $(".completed").append(htmlCCount);
+                        $(".tHeader").append(html);
+
+                        $.each(response.incomplete, function (i, key) {
+
+                            htmlICount += '<td>' + key + '</td>'
+                        });
+
+                        $(".Incompleted").append(htmlICount);
+
+                        //setTimeout(function () {
+                        InitializeChart();
+
+                        //}, 0);
+                    },
+
+
+                });
+            }
+            else {
+
+                destroyTable();
+            }
+        });
+
+        $("#byCollection").on("click", function () {
+            startDate = $("#startDate").val();
+            endDate = $("#endDate").val();
+            if ($(this).prop("checked")) {
+                $.ajax({
+                    url: '/Admin/Dashboard/getReportData',
+                    data: { type: "byCollection", startDate: startDate, endDate: endDate },
+                    success: function (response) {
+
+                        $.each(response.completed, function (i, key) {
+                            html += '<th>' + i + '</th>';
+                            htmlCCount += '<td>' + key + '</td>'
+                        });
+                        $(".completed").append(htmlCCount);
+                        $(".tHeader").append(html);
+                        $.each(response.incomplete, function (i, key) {
+                            htmlICount += '<td>' + key + '</td>'
+                        });
+                        $(".Incompleted").append(htmlICount);
+                         InitializeChart();
+
+                    },
+                });
+            }
+            else {
+                destroyTable();
+            }
+        });
+
+
+        $("#byManager").on("click", function () {
+            startDate = $("#startDate").val();
+            endDate = $("#endDate").val();
+            if ($(this).prop("checked")) {
+                $.ajax({
+                    url: '/Admin/Dashboard/getReportData',
+                    data: { type: "byManager", startDate: startDate, endDate: endDate },
+                    success: function (response) {
+                        $.each(response.completed, function (i, key) {
+                            html += '<th>' + i + '</th>';
+                            htmlCCount += '<td>' + key + '</td>'
+                        });
+                        $(".completed").append(htmlCCount);
+                        $(".tHeader").append(html);
+                        $.each(response.incomplete, function (i, key) {
+                            htmlICount += '<td>' + key + '</td>'
+                        });
+                        $(".Incompleted").append(htmlICount);
+                        //setTimeout(function () {
+                        InitializeChart();
+                        //}, 0);
+                    },
+                });
+            }
+            else {
+                destroyTable();
+            }
+        });
+        function destroyTable() {
+            //htmlICount = '';
+            //htmlCCount = '';
+            //html = '';
+            //chart.destroy();
+            window.location.reload(true);
+        }
+        function tooltip() {
+            return '<b>' + this.series.name + '</b><br/>' +
+                this.point.y + ' ' + this.point.name.toLowerCase();
+        };
+        function InitializeChart() {
+
+            chart = Highcharts.chart('container', {
+                data: {
+                    table: 'datatable'
+                },
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: 'Objections Report (Completed/Incompleted)'
+                },
+                yAxis: {
+                    allowDecimals: false,
+                    title: {
+                        text: 'Number of Objections'
+                    }
+                },
+                tooltip: {
+                    formatter: function () {
+                        return '<b>' + this.series.name + '</b><br/>' +
+                            this.point.y + ' ' + this.point.name.toLowerCase();
+                    }
+                }
+            });
+        }
+    </script>
+}
